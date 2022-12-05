@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Gerenciador de Tarefas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+  <link rel="stylesheet" href="./style.css">
+</head>
+
+<body>
+  <main>
+    <div class="container-xxl interfaceContainer">
+      <div class="firstVerticalRetangle">
+      </div>
+      <div class="secondVerticalRetangle">
+      </div>
+      <div class="container pt-5 appContainer">
+        <div class="row mt-5 logo">
+          <img src="/assets/logo.svg" alt="Arnia Logo">
+        </div>
+        <div class="row mt-5">
+          <ul class="list-inline">
+            <li class="list-inline-item">
+              <img src="./assets/clipboardicon.svg">
+            </li>
+            <li class="list-inline-item h3 appName">
+              Gerenciador de Tarefas
+            </li>
+          </ul>
+        </div>
+        <div class="row mb-5">
+          <div class="col-12">
+            <button type="button" class="openModalNewTaskButton">
+              +Adicionar nova tarefa
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-borderless table-hover">
+            <thead>
+              <tr>
+                <th>Núm</th>
+                <th>Descrição</th>
+                <th>Data de entrega</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody class="tableTasksBody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-xxl registerTaskModal editTaskModal">
+
+      <div class="container p-5 m-auto mt-5 form">
+        <div class="row mb-4 modalTitle h3">
+          Test
+        </div>
+        <form>
+          <div class="mb-3">
+            <label class="form-label" for="inputNumber">
+              Número
+            </label>
+            <input class="form-control formInputs" id="inputNumber" />
+            <small></small>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="inputDescription">
+              Descrição
+            </label>
+            <input class="form-control formInputs" id="inputDescription" />
+            <small></small>
+          </div>
+
+          <div class="col-4 mb-3">
+            <label class="form-label" for="inputDate">
+              Data
+            </label>
+            <input class="form-control text-center formInputs" id="inputDate" placeholder="DD/MM/AAAA" />
+            <small></small>
+          </div>
+          <div class="mb-5 col-4">
+            <label class="form-label" for="inputTaskStatus">
+              Status
+            </label>
+            <select class="form-select formInputs" id="taskStatusInput">
+              <option selected></option>
+              <option value="Concluído">
+                Concluído
+              </option>
+              <option value="Em andamento">
+                Em andamento
+              </option>
+              <option value="Parado">
+                Parado
+              </option>
+            </select>
+            <small></small>
+          </div>
+        </form>
+        <div class="row navigationModalNewTask">
+          <div class="col-2">
+            <a href="" 
+            class="closeModalButton">
+              Cancelar
+            </a>
+          </div>
+          <div class="col-2">
+            <button 
+            type="button" class="modalEventButton">
+              Salvar
+            </button>
+          </div>
+        </div>
+      </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <script src="main.js"></script>
+</body>
+
+</html>

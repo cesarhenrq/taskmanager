@@ -40,7 +40,8 @@ tbody > tr:nth-child(even) {
 .openModalNewTaskButton,
 .modalEventButton,
 .loginUserButton,
-.registerUserButton {
+.registerUserButton,
+.registerButton {
   background-color: white;
   color: #68519d;
   border: 1px solid #68519d;
@@ -48,13 +49,16 @@ tbody > tr:nth-child(even) {
   padding: 0.3rem 1.6rem;
 }
 
-.openModalNewTaskButton:hover {
+.openModalNewTaskButton:hover,
+.loginUserButton:hover,
+.registerUserButton:hover {
   background-color: #68519d;
   color: white;
 }
 
 .appName,
-.modalTitle {
+.modalTitle,
+.mb-3 > .h3 {
   color: #68519d;
   font-weight: bold;
 }
@@ -94,6 +98,13 @@ tr {
   width: 45%;
 }
 
+.formLoginPage,
+.formRegisterPage {
+  border: 1px solid #68519d;
+  border-radius: 0.5rem;
+  width: 35%;
+}
+
 .formInputs {
   border: 1px solid #000000;
   border-radius: 0.5rem;
@@ -115,11 +126,6 @@ label {
 .form-select,
 option {
   color: #2c2661;
-}
-
-option:hover {
-  background-color: #2c2661;
-  color: white;
 }
 
 .closeModalButton {

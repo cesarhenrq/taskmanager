@@ -16,15 +16,12 @@ small {
   border-color: red;
 }
 
-.interfaceContainer {
-  display: flex;
-}
-
 .appContainer {
-  width: 93.3%
+  width: 63.2%
 }
 
-.firstVerticalRetangle, .secondVerticalRetangle {
+.firstVerticalRetangle,
+.secondVerticalRetangle {
   height: 100vh
 }
 
@@ -43,7 +40,8 @@ small {
   height: 64px;
 }
 
-.openModalNewTaskButton, .modalEventButton {
+.openModalNewTaskButton,
+.modalEventButton {
   background-color: white;
   color: #68519D;
   border: 1px solid #68519D;
@@ -56,31 +54,33 @@ small {
   color: white;
 }
 
-.appName, .modalTitle {
+.appName,
+.modalTitle {
   color: #68519D;
   font-weight: bold;
 }
 
-.list-inline {
-  display: flex;
-  vertical-align: baseline;
-}
-
-.openModalEditTaskButton, .deleteTaskButton {
+.openModalEditTaskButton,
+.deleteTaskButton {
   background: none;
   border: none
 }
 
-th, tr{
+th,
+tr {
   color: #2C2661;
 }
 
-tbody > tr:nth-child(even) {
+tbody>tr:nth-child(even) {
   background-color: #F5F5F5;
-
 }
 
-.registerTaskModal, .editTaskModal {
+tbody > .darkmodetr:nth-child(even) {
+  background-color: #262626
+}
+
+.registerTaskModal,
+.editTaskModal {
   display: none;
   position: fixed;
   z-index: 1;
@@ -88,6 +88,7 @@ tbody > tr:nth-child(even) {
   top: 0;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.4);
+  animation: 3s ease-in 1s 2 reverse both paused slidein;
 }
 
 .form {
@@ -100,18 +101,15 @@ label {
   color: #68519D;
 }
 
-.form-control, .form-select, option {
+.form-control,
+.form-select,
+option {
   color: #2C2661;
 }
 
 option:hover {
   background-color: #2C2661;
   color: white;
-}
-
-.navigationModalNewTask {
-  display: flex;
-  justify-content: space-between;
 }
 
 .closeModalButton {
@@ -137,4 +135,94 @@ td[value="Parado"] {
 .enabledButton {
   background-color: #68519D;
   color: white;
+}
+
+.polygonContainer {
+  padding-left: 8.8rem;
+}
+
+.polygon {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-height: 634px;
+  height: 75%;
+  width: 23%;
+  background-color: #F8B04E;
+  clip-path: polygon(0 100%, 0 45%, 45% 0, 100% 0);
+  transform: rotate(180deg);
+}
+
+#darkModeToggle {
+    width: 31.25rem;
+    height: 12.5rem;
+    position: relative;
+    display: block;
+    background: #ebebeb;
+    border-radius: 12.5rem;
+    box-shadow: inset 0px 0.313rem 0.938rem rgba(0, 0, 0, 0.4), inset 0px --0313rem 0.938rem rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+}
+
+#darkModeToggle:after {
+  content: "";
+  width:11.25rem;
+  height: 11.25rem;
+  position: absolute;
+  top:0.625rem;
+  left:0.625rem;
+  background: linear-gradient(180deg,#ffcc89,#d8860b);
+  border-radius: 11.25rem;
+  box-shadow: 0px 0.313rem 0.626rem rgba(0,0,0,0.2);
+}
+
+#darkmode-toggle {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+#darkmode-toggle:checked + #darkModeToggle {
+  background: #242424;
+}
+
+#darkmode-toggle:checked + #darkModeToggle:after {
+  left:30.5rem;
+  transform: translateX(-100%);
+  background: linear-gradient(180deg,#777,#3a3a3a);
+}
+
+#darkModeToggle, #darkModeToggle:after {
+  transition: 0.3s
+}
+
+#darkModeToggle:active:after {
+  width: 16.25rem;
+}
+
+label svg {
+  position: absolute;
+  width: 7.5rem;
+  top:2.5rem;
+  z-index: 100;
+}
+label svg.sun {
+  left:2.5rem;
+  fill:#fff;
+  transition: 0.3s;
+}
+label svg.moon {
+  left:21.25rem;
+  fill:#7e7e7e;
+  transition: 0.3s;
+}
+input:checked + label svg.sun {
+  fill:#7e7e7e;
+}
+input:checked + label svg.moon {
+  fill:#fff;
+}
+
+.backgroundDarkMode {
+  background-color: rgb(36,36,36);
 }

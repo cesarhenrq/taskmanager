@@ -1,11 +1,102 @@
 body {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
 small {
   color: red;
   font-size: 12px;
+}
+
+.appContainer {
+  padding: 4.5rem 4rem;
+}
+
+.firstVerticalRetangle,
+.secondVerticalRetangle {
+  height: 100vh;
+}
+
+.firstVerticalRetangle {
+  width: 51px;
+  background-color: #68519d;
+}
+
+.secondVerticalRetangle {
+  width: 9px;
+  background-color: #d7cae5;
+}
+
+.logo {
+  width: 216px;
+  height: 64px;
+}
+
+tbody > tr:nth-child(even) {
+  background: #f5f5f5;
+}
+
+.openModalNewTaskButton,
+.modalEventButton,
+.loginUserButton,
+.registerUserButton {
+  background-color: white;
+  color: #68519d;
+  border: 1px solid #68519d;
+  border-radius: 5rem;
+  padding: 0.3rem 1.6rem;
+}
+
+.openModalNewTaskButton:hover {
+  background-color: #68519d;
+  color: white;
+}
+
+.appName,
+.modalTitle {
+  color: #68519d;
+  font-weight: bold;
+}
+
+.openModalEditTaskButton,
+.deleteTaskButton {
+  background: none;
+  border: none;
+}
+
+th,
+tr {
+  color: #2c2661;
+}
+
+.registerTaskModal,
+.editTaskModal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.form {
+  background-color: white;
+  border: 1px solid #68519d;
+  border-radius: 0.5rem;
+  position: relative;
+  margin: 0 auto;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 45%;
+}
+
+.formInputs {
+  border: 1px solid #000000;
+  border-radius: 0.5rem;
 }
 
 .success {
@@ -16,136 +107,58 @@ small {
   border-color: red;
 }
 
-.appContainer {
-  width: 63.2%
-}
-
-.firstVerticalRetangle,
-.secondVerticalRetangle {
-  height: 100vh
-}
-
-.firstVerticalRetangle {
-  width: 5%;
-  background-color: #68519D
-}
-
-.secondVerticalRetangle {
-  width: 1.7%;
-  background-color: #D7CAE5
-}
-
-.logo {
-  width: 216px;
-  height: 64px;
-}
-
-.openModalNewTaskButton,
-.modalEventButton, .loginUserButton, .registerUserButton{
-  background-color: white;
-  color: #68519D;
-  border: 1px solid #68519D;
-  border-radius: 5rem;
-  padding: 0.3rem 1.6rem;
-}
-
-.openModalNewTaskButton:hover {
-  background-color: #68519D;
-  color: white;
-}
-
-.appName,
-.modalTitle {
-  color: #68519D;
-  font-weight: bold;
-}
-
-.openModalEditTaskButton,
-.deleteTaskButton {
-  background: none;
-  border: none
-}
-
-th,
-tr {
-  color: #2C2661;
-}
-
-tbody>tr:nth-child(even) {
-  background-color: #F5F5F5;
-}
-
-tbody > .darkmodetr:nth-child(even) {
-  background-color: #262626
-}
-
-.registerTaskModal,
-.editTaskModal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
-  opacity: 0;
-  transform: translateX(-20px)
-}
-
-#registerTaskModal {
-  animation-name: slide;
-  animation-duration: 2s;
-  animation-fill-mode: forwards;
-}
-
-.form {
-  background-color: white;
-  border: 1px solid #68519D;
-  border-radius: 0.5rem;
-}
-
 label {
-  color: #68519D;
+  color: #68519d;
 }
 
 .form-control,
 .form-select,
 option {
-  color: #2C2661;
+  color: #2c2661;
 }
 
 option:hover {
-  background-color: #2C2661;
+  background-color: #2c2661;
   color: white;
 }
 
 .closeModalButton {
   color: #828282;
+  text-decoration: none;
 }
 
-td[value="Concluído"] {
-  color: #27AE68;
+.closeModalButton:hover {
+  text-decoration: underline;
+  color: #828282;
 }
 
-td[value="Em andamento"] {
-  color: #F8B04E
+.form-select {
+  background-image: url(../assets/select-detail.svg);
 }
 
-td[value="Parado"] {
-  color: #EB5757;
+td[value='Concluído'] {
+  color: #27ae68;
+}
+
+td[value='Em andamento'] {
+  color: #f8b04e;
+}
+
+td[value='Parado'] {
+  color: #eb5757;
 }
 
 #inputDate::placeholder {
-  color: #68519D;
+  color: #68519d;
 }
 
 .enabledButton {
-  background-color: #68519D;
+  background-color: #68519d;
   color: white;
 }
 
 .polygonContainer {
-  padding-left: 8.8rem;
+  width: 270px;
 }
 
 .polygon {
@@ -154,10 +167,18 @@ td[value="Parado"] {
   bottom: 0;
   min-height: 634px;
   height: 75%;
-  width: 23%;
-  background-color: #F8B04E;
+  width: 20%;
+  background-color: #f8b04e;
   clip-path: polygon(0 100%, 0 45%, 45% 0, 100% 0);
   transform: rotate(180deg);
+}
+
+.d-flex {
+  padding: 0;
+}
+
+.responseAPI {
+  display: none;
 }
 
 /*#darkModeToggle {
@@ -233,7 +254,3 @@ input:checked + label svg.moon {
 .backgroundDarkMode {
   background-color: rgb(36,36,36);
 }*/
-
-.responseAPI {
-  display: none;
-}

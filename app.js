@@ -98,7 +98,7 @@ const deleteTask = async (id) => {
 
 const updateTask = async (id, updatedTask) => {
   try {
-    await fetch(`${url}${id}`, {
+    await fetch(`${url}/${id}`, {
       method: "PUT",
       headers: {
         'Accept': 'application/json, text/plain, */*',
@@ -473,7 +473,7 @@ modalEventButton.addEventListener('click', async () => {
     })
     modalEventButton.classList.add('backgroundDarkMode')
   }
-})
+})*/
 
 const showResponseAPI = (response) => {
   responseAPI.innerHTML = `${response}`
@@ -482,7 +482,8 @@ const showResponseAPI = (response) => {
     response.innerHTML = ''
     responseAPI.style.display = "none"
   }, 3000)
-}*/
+}
+
 
 const setSucessColor = () => {
   responseAPI.style.color = "#27AE68"

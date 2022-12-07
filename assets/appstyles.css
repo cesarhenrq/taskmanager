@@ -1,0 +1,239 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+small {
+  color: red;
+  font-size: 12px;
+}
+
+.success {
+  border-color: green;
+}
+
+.error {
+  border-color: red;
+}
+
+.appContainer {
+  width: 63.2%
+}
+
+.firstVerticalRetangle,
+.secondVerticalRetangle {
+  height: 100vh
+}
+
+.firstVerticalRetangle {
+  width: 5%;
+  background-color: #68519D
+}
+
+.secondVerticalRetangle {
+  width: 1.7%;
+  background-color: #D7CAE5
+}
+
+.logo {
+  width: 216px;
+  height: 64px;
+}
+
+.openModalNewTaskButton,
+.modalEventButton, .loginUserButton, .registerUserButton{
+  background-color: white;
+  color: #68519D;
+  border: 1px solid #68519D;
+  border-radius: 5rem;
+  padding: 0.3rem 1.6rem;
+}
+
+.openModalNewTaskButton:hover {
+  background-color: #68519D;
+  color: white;
+}
+
+.appName,
+.modalTitle {
+  color: #68519D;
+  font-weight: bold;
+}
+
+.openModalEditTaskButton,
+.deleteTaskButton {
+  background: none;
+  border: none
+}
+
+th,
+tr {
+  color: #2C2661;
+}
+
+tbody>tr:nth-child(even) {
+  background-color: #F5F5F5;
+}
+
+tbody > .darkmodetr:nth-child(even) {
+  background-color: #262626
+}
+
+.registerTaskModal,
+.editTaskModal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  opacity: 0;
+  transform: translateX(-20px)
+}
+
+#registerTaskModal {
+  animation-name: slide;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+
+.form {
+  background-color: white;
+  border: 1px solid #68519D;
+  border-radius: 0.5rem;
+}
+
+label {
+  color: #68519D;
+}
+
+.form-control,
+.form-select,
+option {
+  color: #2C2661;
+}
+
+option:hover {
+  background-color: #2C2661;
+  color: white;
+}
+
+.closeModalButton {
+  color: #828282;
+}
+
+td[value="Concluído"] {
+  color: #27AE68;
+}
+
+td[value="Em andamento"] {
+  color: #F8B04E
+}
+
+td[value="Parado"] {
+  color: #EB5757;
+}
+
+#inputDate::placeholder {
+  color: #68519D;
+}
+
+.enabledButton {
+  background-color: #68519D;
+  color: white;
+}
+
+.polygonContainer {
+  padding-left: 8.8rem;
+}
+
+.polygon {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-height: 634px;
+  height: 75%;
+  width: 23%;
+  background-color: #F8B04E;
+  clip-path: polygon(0 100%, 0 45%, 45% 0, 100% 0);
+  transform: rotate(180deg);
+}
+
+/*#darkModeToggle {
+    width: 31.25rem;
+    height: 12.5rem;
+    position: relative;
+    display: block;
+    background: #ebebeb;
+    border-radius: 12.5rem;
+    box-shadow: inset 0px 0.313rem 0.938rem rgba(0, 0, 0, 0.4), inset 0px --0313rem 0.938rem rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+}
+
+#darkModeToggle:after {
+  content: "";
+  width:11.25rem;
+  height: 11.25rem;
+  position: absolute;
+  top:0.625rem;
+  left:0.625rem;
+  background: linear-gradient(180deg,#ffcc89,#d8860b);
+  border-radius: 11.25rem;
+  box-shadow: 0px 0.313rem 0.626rem rgba(0,0,0,0.2);
+}
+
+#darkmode-toggle {
+  width: 0;
+  height: 0;
+  visibility: hidden;
+}
+
+#darkmode-toggle:checked + #darkModeToggle {
+  background: #242424;
+}
+
+#darkmode-toggle:checked + #darkModeToggle:after {
+  left:30.5rem;
+  transform: translateX(-100%);
+  background: linear-gradient(180deg,#777,#3a3a3a);
+}
+
+#darkModeToggle, #darkModeToggle:after {
+  transition: 0.3s
+}
+
+#darkModeToggle:active:after {
+  width: 16.25rem;
+}
+
+label svg {
+  position: absolute;
+  width: 7.5rem;
+  top:2.5rem;
+  z-index: 100;
+}
+label svg.sun {
+  left:2.5rem;
+  fill:#fff;
+  transition: 0.3s;
+}
+label svg.moon {
+  left:21.25rem;
+  fill:#7e7e7e;
+  transition: 0.3s;
+}
+input:checked + label svg.sun {
+  fill:#7e7e7e;
+}
+input:checked + label svg.moon {
+  fill:#fff;
+}
+
+.backgroundDarkMode {
+  background-color: rgb(36,36,36);
+}*/
+
+.responseAPI {
+  display: none;
+}

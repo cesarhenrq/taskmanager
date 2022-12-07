@@ -14,6 +14,11 @@ const DEADLINE_REQUIRED = 'Por favor insira um prazo para a tarefa'
 const DEADLINE_INVALID = 'Por favor insira um prazo no padrão correto: DD/MM/AAAA'
 const STATUS_REQUIRED = 'Por favor insira o status da tarefa'
 
+const RESPONSE_EDIT_SUCESS = 'Tarefa editada com sucesso!'
+const RESPONSE_EDIT_FAIL = 'Não foi possível editar a tarefa!'
+const RESPONSE_ADD_SUCESS = 'Tarefa adicionada com sucesso!'
+const RESPONSE_ADD_FAIL = 'Não foi possível adicionar a tarefa!'
+
 const url = 'http://localhost:3000/tasks'
 
 const openModalNewTaskButton = document.querySelector('.openModalNewTaskButton')
@@ -48,20 +53,29 @@ const smalls = document.querySelectorAll('small')
 
 const darkModeToggle = document.querySelector('#darkmode-toggle')
 
+const responseAPI = document.querySelector('.responseAPI')
+
 const addNewTask = async (newTask) => {
-  await fetch(url, {
-    method: "POST",
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      "taskNumber": newTask.taskNumber,
-      "description": newTask.description,
-      "deadline": newTask.deadline,
-      "status": newTask.status
-    })
-  });
+  try {
+    await fetch(url, {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "taskNumber": newTask.taskNumber,
+        "description": newTask.description,
+        "deadline": newTask.deadline,
+        "status": newTask.status
+      })
+    });
+    setSucessColor()
+    showResponseAPI(RESPONSE_ADD_SUCESS)
+  } catch (error) {
+    setFailColor()
+    showResponseAPI(RESPONSE_ADD_FAIL)
+  }
 }
 
 const getTasks = async () => {
@@ -73,25 +87,36 @@ const getTasks = async () => {
 }
 
 const deleteTask = async (id) => {
-  await fetch(`${url}/${id}`, {
-    method: 'DELETE',
-  })
+  try {
+    await fetch(`${url}/${id}`, {
+      method: 'DELETE',
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 const updateTask = async (id, updatedTask) => {
-  await fetch(`${url}${id}`, {
-    method: "PUT",
-    headers: {
-      'Accept': 'application/json, text/plain, */*',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      "taskNumber": updatedTask.taskNumber,
-      "description": updatedTask.description,
-      "deadline": updatedTask.deadline,
-      "status": updatedTask.status
-    })
-  });
+  try {
+    await fetch(`${url}${id}`, {
+      method: "PUT",
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        "taskNumber": updatedTask.taskNumber,
+        "description": updatedTask.description,
+        "deadline": updatedTask.deadline,
+        "status": updatedTask.status
+      })
+    });
+    setSucessColor()
+    showResponseAPI(RESPONSE_EDIT_SUCESS)
+  } catch (error) {
+    setFailColor()
+    showResponseAPI(RESPONSE_EDIT_FAIL)
+  }
 }
 
 const renderTasks = (tasks) => {
@@ -185,12 +210,7 @@ const addActionToDeleteTaskButton = (deleteTaskButton) => {
 
       tasks = await getTasks()
       renderTasks(tasks)
-
-      const deleteTaskButton = document.querySelectorAll('.deleteTaskButton')
-      addActionToDeleteTaskButton(deleteTaskButton)
-
-      const openModalEditTaskButton = document.querySelectorAll('.openModalEditTaskButton')
-      addActionToOpenModalEditTaskButton(openModalEditTaskButton)
+      renderButtonsWithActions()
     })
   })
 }
@@ -219,6 +239,7 @@ const showMessage = (input, message, type) => {
   } else {
     input.classList.remove("success")
     input.classList.add("error")
+    disableButton
   }
   //input.className = `${input.className} ${type ? 'success' : 'error'}`
   return type
@@ -239,23 +260,56 @@ const hasValue = (input, message) => {
   return showSuccess(input)
 }
 
+const hasValueWithoutShowMessage = (input) => {
+  if (input.value.trim() === '') {
+    return false
+  }
+  return true
+}
+
 const validateEachInput = () => {
   inputNumber.addEventListener('blur', () => {
     validateTaskNumber(inputNumber, NUMBER_REQUIRED, NUMBER_INVALID)
+    if (isFormFieldsValidWithoutShowMessage()) {
+      enableButton()
+    } else {
+      disableButton()
+    }
   })
 
   inputDescription.addEventListener('blur', () => {
     hasValue(inputDescription, DESCRIPTION_REQUIRED)
+    if (isFormFieldsValidWithoutShowMessage()) {
+      enableButton()
+    } else {
+      disableButton()
+    }
   })
 
   inputDate.addEventListener('blur', () => {
     validateTaskDeadline(inputDate, DEADLINE_REQUIRED, DEADLINE_INVALID)
+    if (isFormFieldsValidWithoutShowMessage()) {
+      enableButton()
+    } else {
+      disableButton()
+    }
   })
 
   inputTaskStatus.addEventListener('blur', () => {
     hasValue(inputTaskStatus, STATUS_REQUIRED)
-    if (isFormFieldsValid()) enableButton()
+    if (isFormFieldsValidWithoutShowMessage()) {
+      enableButton()
+    } else {
+      disableButton()
+    }
   })
+}
+
+const validateTaskDeadlineRegex = (input) => {
+  const taskDeadline = input.value
+  const taskDeadlineRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/
+
+  return taskDeadlineRegex.exec(taskDeadline)
 }
 
 const validateTaskDeadline = (input, requiredMsg, invalidMsg) => {
@@ -263,14 +317,30 @@ const validateTaskDeadline = (input, requiredMsg, invalidMsg) => {
     return false
   }
 
-  const taskDeadline = input.value
-  const taskDeadlineRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/
-
-  if (taskDeadlineRegex.exec(taskDeadline)) {
+  if (validateTaskDeadlineRegex(input)) {
     return true
   }
 
   return showError(input, invalidMsg)
+}
+
+const validateTaskDeadlineWithoutShowMessage = (input) => {
+  if (!hasValueWithoutShowMessage(input)) {
+    return false
+  }
+
+  if (validateTaskDeadlineRegex(input)) {
+    return true
+  }
+
+  return false
+}
+
+const validateTaskNumberRegex = (input) => {
+  const taskNumber = input.value
+  const taskNumberRegex = new RegExp('^[0-9]+$')
+
+  return taskNumberRegex.test(taskNumber)
 }
 
 const validateTaskNumber = (input, requiredMsg, invalidMsg) => {
@@ -278,14 +348,23 @@ const validateTaskNumber = (input, requiredMsg, invalidMsg) => {
     return false
   }
 
-  const taskNumber = input.value
-  const taskNumberRegex = new RegExp('^[0-9]+$')
-
-  if (taskNumberRegex.test(taskNumber)) {
+  if (validateTaskNumberRegex(input)) {
     return true
   }
 
   return showError(input, invalidMsg)
+}
+
+const validateTaskNumberWithoutShowMessage = (input) => {
+  if (!hasValueWithoutShowMessage(input)) {
+    return false
+  }
+
+  if (validateTaskNumberRegex(input)) {
+    return true
+  }
+
+  return false
 }
 
 const isFormFieldsValid = () => {
@@ -293,6 +372,17 @@ const isFormFieldsValid = () => {
   const descriptionValid = hasValue(inputDescription, DESCRIPTION_REQUIRED)
   const taskDeadlineValid = validateTaskDeadline(inputDate, DEADLINE_REQUIRED, DEADLINE_INVALID)
   const taskStatusValid = hasValue(inputTaskStatus, STATUS_REQUIRED)
+
+  const validateFormFields = numberTaskValid && descriptionValid && taskDeadlineValid && taskStatusValid
+
+  return validateFormFields
+}
+
+const isFormFieldsValidWithoutShowMessage = () => {
+  const numberTaskValid = validateTaskNumberWithoutShowMessage(inputNumber)
+  const descriptionValid = hasValueWithoutShowMessage(inputDescription)
+  const taskDeadlineValid = validateTaskDeadlineWithoutShowMessage(inputDate)
+  const taskStatusValid = hasValueWithoutShowMessage(inputTaskStatus)
 
   const validateFormFields = numberTaskValid && descriptionValid && taskDeadlineValid && taskStatusValid
 
@@ -307,24 +397,23 @@ window.addEventListener('click', async (event) => {
     let tasks = await getTasks()
     renderTasks(tasks)
 
-    const deleteTaskButton = document.querySelectorAll('.deleteTaskButton')
-    addActionToDeleteTaskButton(deleteTaskButton)
-
-    const openModalEditTaskButton = document.querySelectorAll('.openModalEditTaskButton')
-    addActionToOpenModalEditTaskButton(openModalEditTaskButton)
+    renderButtonsWithActions()
   }
 })
 
-
-window.addEventListener('load', async () => {
-  const tasks = await getTasks()
-  renderTasks(tasks)
-
+const renderButtonsWithActions = () => {
   const deleteTaskButton = document.querySelectorAll('.deleteTaskButton')
   addActionToDeleteTaskButton(deleteTaskButton)
 
   const openModalEditTaskButton = document.querySelectorAll('.openModalEditTaskButton')
   addActionToOpenModalEditTaskButton(openModalEditTaskButton)
+}
+
+
+window.addEventListener('load', async () => {
+  const tasks = await getTasks()
+  renderTasks(tasks)
+  renderButtonsWithActions()
 })
 
 openModalNewTaskButton.addEventListener('click', () => {
@@ -333,39 +422,29 @@ openModalNewTaskButton.addEventListener('click', () => {
   openModal(registerTaskModal)
 })
 
-/*closeModalButton.addEventListener('click', async (event) => {
-  event.preventDefault()
-  closeModal(registerTaskModal)
-
-  let tasks = await getTasks()
-  renderTasks(tasks)
-
-  const deleteTaskButton = document.querySelectorAll('.deleteTaskButton')
-  addActionToDeleteTaskButton(deleteTaskButton)
-
-  const openModalEditTaskButton = document.querySelectorAll('.openModalEditTaskButton')
-  addActionToOpenModalEditTaskButton(openModalEditTaskButton)
-})*/
-
 modalEventButton.addEventListener('click', async () => {
 
   if (isFormFieldsValid()) {
     if (modalEventButton.value === "newTask") {
+      disableButton()
       const newTask = insertTaskDetailsInObject()
       await addNewTask(newTask)
       removeBorderFormInputs(inputs)
       restartInputs(inputs)
+      const tasks = await getTasks()
+      renderTasks(tasks)
 
     } else if (modalEventButton.value === "editTask") {
       const editedTask = insertTaskDetailsInObject()
       await updateTask(idTask, editedTask)
       removeBorderFormInputs(inputs)
+      const tasks = await getTasks()
+      renderTasks(tasks)
     }
   }
-  disableButton()
 })
 
-darkModeToggle.addEventListener('click', () => {
+/*darkModeToggle.addEventListener('click', () => {
   if (!darkModeToggle.checked) {
     document.body.classList.remove('backgroundDarkMode')
     openModalNewTaskButton.classList.remove('backgroundDarkMode')
@@ -379,6 +458,7 @@ darkModeToggle.addEventListener('click', () => {
       input.classList.remove('backgroundDarkMode')
     })
     modalEventButton.classList.remove('backgroundDarkMode')
+
   } else {
     document.body.classList.add('backgroundDarkMode')
     openModalNewTaskButton.classList.add('backgroundDarkMode')
@@ -394,3 +474,20 @@ darkModeToggle.addEventListener('click', () => {
     modalEventButton.classList.add('backgroundDarkMode')
   }
 })
+
+const showResponseAPI = (response) => {
+  responseAPI.innerHTML = `${response}`
+  responseAPI.style.display = "block"
+  setInterval(() => {
+    response.innerHTML = ''
+    responseAPI.style.display = "none"
+  }, 3000)
+}*/
+
+const setSucessColor = () => {
+  responseAPI.style.color = "#27AE68"
+}
+
+const setFailColor = () => {
+  responseAPI.style.color = "#EB5757"
+}

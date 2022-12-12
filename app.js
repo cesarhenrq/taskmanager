@@ -1,5 +1,5 @@
 class Task {
-  constructor(taskNumber, description, deadline, status,) {
+  constructor(taskNumber, description, deadline, status) {
     this.taskNumber = taskNumber;
     this.description = description;
     this.deadline = deadline;
@@ -8,9 +8,9 @@ class Task {
 }
 
 class User {
-  constructor(name, userName, password) {
+  constructor(name, nickname, password) {
     this.name = name;
-    this.userName = userName;
+    this.nickname = nickname;
     this.password = password;
   }
 }
@@ -23,36 +23,59 @@ const DEADLINE_INVALID =
   'Por favor insira um prazo no padrão correto: DD/MM/AAAA';
 const STATUS_REQUIRED = 'Por favor insira o status da tarefa';
 
+const NAME_REQUIRED = 'Por favor insira seu nome';
+const NICKNAME_REQUIRED = 'Por favor insira seu usuário';
+const PASSWORD_REQUIRED = 'Por favor insira sua senha';
+const PASSWORDCONFIRMATION_REQUIRED = 'Por favor confirme sua senha';
+const PASSWORDCONFIRMATION_INVALID = 'As senhas devem ser iguais';
+
+const CREDENTIALS_REQUIRED = 'Esse campo não pode ficar vazio';
+
 const RESPONSE_EDIT_SUCESS = 'Tarefa editada com sucesso!';
 const RESPONSE_EDIT_FAIL = 'Não foi possível editar a tarefa!';
 const RESPONSE_ADD_SUCESS = 'Tarefa adicionada com sucesso!';
 const RESPONSE_ADD_FAIL = 'Não foi possível adicionar a tarefa!';
 
-const url = 'http://localhost:3000/tasks';
+const urlTasks = 'http://localhost:3000/tasks';
+const urlUsers = 'http://localhost:3000/users';
 
 const openModalNewTaskButton = document.querySelector(
   '.openModalNewTaskButton'
 );
+const closeModalButton = document.querySelector('.closeModalButton');
+const modalEventButton = document.querySelector('.modalEventButton');
+const registerUserButton = document.querySelector('.registerUserButton');
+const registerButton = document.querySelector('.registerButton');
+const loginUserButton = document.querySelector('.loginUserButton');
+const closeRegisterUserModalButton = document.querySelector(
+  '.closeRegisterUserModalButton'
+);
 
 const registerTaskModal = document.querySelector('.registerTaskModal');
-
 const editTaskModal = document.querySelector('.editTaskModal');
-
-const modalTitle = document.querySelector('.modalTitle');
-
-const closeModalButton = document.querySelector('.closeModalButton');
+const loginPage = document.querySelector('.loginPage');
+const registerPage = document.querySelector('.registerPage');
 
 const inputs = document.querySelectorAll('.formInputs');
+const formRegisterInputs = document.querySelectorAll('.formRegisterInputs');
+const formLoginInputs = document.querySelectorAll('.formLoginInputs');
+
+const modalTitle = document.querySelector('.modalTitle');
+const responseAPI = document.querySelector('.responseAPI');
+const loginMessage = document.querySelector('#loginMessage');
 
 const inputNumber = document.querySelector('#inputNumber');
-
 const inputDescription = document.querySelector('#inputDescription');
-
 const inputDate = document.querySelector('#inputDate');
-
 const inputTaskStatus = document.querySelector('#taskStatusInput');
-
-const modalEventButton = document.querySelector('.modalEventButton');
+const inputName = document.querySelector('#inputName');
+const inputNickname = document.querySelector('#inputNickname');
+const inputPasswordUserRegister = document.querySelector(
+  '#inputPasswordUserRegister'
+);
+const inputPasswordUserConfirmRegister = document.querySelector(
+  '#inputPasswordUserConfirmRegister'
+);
 
 const tableTasksBody = document.querySelector('.tableTasksBody');
 
@@ -62,56 +85,48 @@ const table = document.querySelector('table');
 
 const smalls = document.querySelectorAll('small');
 
-const darkModeToggle = document.querySelector('#darkmode-toggle');
+// const darkModeToggle = document.querySelector('#darkmode-toggle');
 
-const responseAPI = document.querySelector('.responseAPI');
+const addNewUser = async newUser => {
+  const { name, nickname, password } = newUser;
 
-const registerUserButton = document.querySelector('.registerUserButton');
+  await fetch(urlUsers, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: name,
+      nickname: nickname,
+      password: password,
+    }),
+  });
+};
 
-const formRegisterInputs = document.querySelectorAll('.formRegisterInputs');
+const getUsers = async () => {
+  const response = await fetch(urlUsers);
 
-const registerButton = document.querySelector('.registerButton');
+  const users = await response.json();
 
-const loginPage = document.querySelector('.loginPage');
-
-const registerPage = document.querySelector('.registerPage');
-
-registerUserButton.addEventListener('click', () => {
-  loginPage.style.display = 'none';
-  registerPage.style.display = 'block';
-});
-
-registerButton.addEventListener('click', () => {
-  insertUserDetailsInObject()
-});
-
-const checkUserIsRegistered = () 
-
-const insertUserDetailsInObject = () => {
-  const inputValues = [];
-
-  for (let index = 0; index < formRegisterInputs.length - 1; index++) {
-    inputValues.push(formRegisterInputs[index].value);
-  }
-
-  const user = new User(...inputValues);
-
-  return user;
+  return users;
 };
 
 const addNewTask = async newTask => {
+  const { taskNumber, description, deadline, status } = newTask;
+
   try {
-    await fetch(url, {
+    await fetch(urlTasks, {
       method: 'POST',
       headers: {
         Accept: 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        taskNumber: newTask.taskNumber,
-        description: newTask.description,
-        deadline: newTask.deadline,
-        status: newTask.status,
+        taskNumber: taskNumber,
+        description: description,
+        deadline: deadline,
+        status: status,
       }),
     });
     setSucessColor();
@@ -123,16 +138,16 @@ const addNewTask = async newTask => {
 };
 
 const getTasks = async () => {
-  const apiResponse = await fetch(url);
+  const response = await fetch(urlTasks);
 
-  let tasks = await apiResponse.json();
+  let tasks = await response.json();
 
   return tasks;
 };
 
 const deleteTask = async id => {
   try {
-    await fetch(`${url}/${id}`, {
+    await fetch(`${urlTasks}/${id}`, {
       method: 'DELETE',
     });
   } catch (error) {
@@ -141,18 +156,19 @@ const deleteTask = async id => {
 };
 
 const updateTask = async (id, updatedTask) => {
+  const { taskNumber, description, deadline, status } = updatedTask;
   try {
-    await fetch(`${url}/${id}`, {
+    await fetch(`${urlTasks}/${id}`, {
       method: 'PUT',
       headers: {
         Accept: 'application/json, text/plain, */*',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        taskNumber: updatedTask.taskNumber,
-        description: updatedTask.description,
-        deadline: updatedTask.deadline,
-        status: updatedTask.status,
+        taskNumber: taskNumber,
+        description: description,
+        deadline: deadline,
+        status: status,
       }),
     });
     setSucessColor();
@@ -167,12 +183,18 @@ const renderTasks = tasks => {
   tableTasksBody.innerHTML = ``;
 
   tasks.forEach(task => {
+    let {
+      taskNumber: taskNumber,
+      description: description,
+      deadline: deadline,
+      status: status,
+    } = task;
     tableTasksBody.innerHTML += `
     <tr>
-      <td>${task.taskNumber}</td>
-      <td>${task.description}</td>
-      <td>${task.deadline}</td>
-      <td value="${task.status}">${task.status}</td>
+      <td>${taskNumber}</td>
+      <td>${description}</td>
+      <td>${deadline}</td>
+      <td value="${status}">${status}</td>
       <td>
         <button type="button" class="openModalEditTaskButton">
           <img src="/assets/edit.svg" alt="Edit Task">
@@ -186,25 +208,44 @@ const renderTasks = tasks => {
   });
 };
 
+const renderButtonsWithActions = () => {
+  const deleteTaskButton = document.querySelectorAll('.deleteTaskButton');
+  addActionToDeleteTaskButton(deleteTaskButton);
+
+  const openModalEditTaskButton = document.querySelectorAll(
+    '.openModalEditTaskButton'
+  );
+  addActionToOpenModalEditTaskButton(openModalEditTaskButton);
+};
+
 const openModal = modal => {
   modal.style.display = 'block';
   validateEachInput();
+  validateEachFormRegisterInput();
+  validateEachFormLoginInput();
 };
 
 const closeModal = modal => {
   modal.style.display = 'none';
-  restartInputs(inputs);
-  removeBorderFormInputs(inputs);
-  removeTextSmalls(smalls);
-  disableButton();
+  if (modal.id === 'loginPage') {
+    restartInputs(formRegisterInputs);
+    removeBorderFormInputs(formRegisterInputs);
+    removeTextSmalls(smalls);
+    disableButton(registerButton);
+  } else {
+    restartInputs(inputs);
+    removeBorderFormInputs(inputs);
+    removeTextSmalls(smalls);
+    disableButton(modalEventButton);
+  }
 };
 
-const enableButton = () => {
-  modalEventButton.classList.add('enabledButton');
+const enableButton = button => {
+  button.classList.add('enabledButton');
 };
 
-const disableButton = () => {
-  modalEventButton.classList.remove('enabledButton');
+const disableButton = button => {
+  button.classList.remove('enabledButton');
 };
 
 const removeTextSmalls = smalls => {
@@ -218,6 +259,29 @@ const removeBorderFormInputs = inputs => {
     input.classList.remove('error');
     input.classList.remove('success');
   });
+};
+
+const restartInputs = inputs => {
+  inputs.forEach(input => {
+    input.value = '';
+  });
+};
+
+const showResponseAPI = response => {
+  responseAPI.innerHTML = `${response}`;
+  responseAPI.style.display = 'block';
+  setInterval(() => {
+    response.innerHTML = '';
+    responseAPI.style.display = 'none';
+  }, 3000);
+};
+
+const setSucessColor = () => {
+  responseAPI.style.color = '#27AE68';
+};
+
+const setFailColor = () => {
+  responseAPI.style.color = '#EB5757';
 };
 
 const insertTaskDetailsInObject = () => {
@@ -239,10 +303,29 @@ const addTaskDetailsToModalEditTask = task => {
   });
 };
 
-const restartInputs = inputs => {
-  inputs.forEach(input => {
-    input.value = '';
+const insertUserDetailsInObject = () => {
+  const inputValues = [];
+
+  for (let index = 0; index < formRegisterInputs.length - 1; index++) {
+    inputValues.push(formRegisterInputs[index].value);
+  }
+
+  const user = new User(...inputValues);
+
+  return user;
+};
+
+const checkUserIsRegistered = (users, input) => {
+  const nickname = input.value;
+  const usersNickname = users.map(user => {
+    return user.nickname;
   });
+
+  const isRegistered = usersNickname.some(userNickname => {
+    return nickname === userNickname;
+  });
+
+  return isRegistered;
 };
 
 const addActionToDeleteTaskButton = deleteTaskButton => {
@@ -269,7 +352,7 @@ const addActionToOpenModalEditTaskButton = openModalEditTaskButton => {
       modalEventButton.value = 'editTask';
       modalTitle.innerHTML = 'Editar tarefa';
       openModal(editTaskModal);
-      enableButton();
+      enableButton(modalEventButton);
     });
   });
 };
@@ -277,6 +360,7 @@ const addActionToOpenModalEditTaskButton = openModalEditTaskButton => {
 const showMessage = (input, message, type) => {
   const msg = input.parentNode.querySelector('small');
   msg.innerText = message;
+
   if (type) {
     input.classList.remove('error');
     input.classList.add('success');
@@ -285,7 +369,7 @@ const showMessage = (input, message, type) => {
     input.classList.add('error');
     disableButton;
   }
-  //input.className = `${input.className} ${type ? 'success' : 'error'}`
+
   return type;
 };
 
@@ -315,36 +399,36 @@ const validateEachInput = () => {
   inputNumber.addEventListener('blur', () => {
     validateTaskNumber(inputNumber, NUMBER_REQUIRED, NUMBER_INVALID);
     if (isFormFieldsValidWithoutShowMessage()) {
-      enableButton();
+      enableButton(modalEventButton);
     } else {
-      disableButton();
+      disableButton(modalEventButton);
     }
   });
 
   inputDescription.addEventListener('blur', () => {
     hasValue(inputDescription, DESCRIPTION_REQUIRED);
     if (isFormFieldsValidWithoutShowMessage()) {
-      enableButton();
+      enableButton(modalEventButton);
     } else {
-      disableButton();
+      disableButton(modalEventButton);
     }
   });
 
   inputDate.addEventListener('blur', () => {
     validateTaskDeadline(inputDate, DEADLINE_REQUIRED, DEADLINE_INVALID);
     if (isFormFieldsValidWithoutShowMessage()) {
-      enableButton();
+      enableButton(modalEventButton);
     } else {
-      disableButton();
+      disableButton(modalEventButton);
     }
   });
 
   inputTaskStatus.addEventListener('blur', () => {
     hasValue(inputTaskStatus, STATUS_REQUIRED);
     if (isFormFieldsValidWithoutShowMessage()) {
-      enableButton();
+      enableButton(modalEventButton);
     } else {
-      disableButton();
+      disableButton(modalEventButton);
     }
   });
 };
@@ -443,6 +527,148 @@ const isFormFieldsValidWithoutShowMessage = () => {
   return validateFormFields;
 };
 
+const isRegisterFormFieldsValid = () => {
+  const nameRegisterValid = hasValue(inputName, NAME_REQUIRED);
+  const nicknameRegisterValid = hasValue(inputNickname, NICKNAME_REQUIRED);
+  const passwordRegisterValid = hasValue(
+    inputPasswordUserRegister,
+    PASSWORD_REQUIRED
+  );
+  const passwordConfirmationRegisterValid = validadePasswordConfirmation(
+    inputPasswordUserConfirmRegister,
+    PASSWORDCONFIRMATION_REQUIRED,
+    PASSWORDCONFIRMATION_INVALID
+  );
+
+  const validateFormFields =
+    nameRegisterValid &&
+    nicknameRegisterValid &&
+    passwordRegisterValid &&
+    passwordConfirmationRegisterValid;
+
+  return validateFormFields;
+};
+
+const isRegisterFormFieldsValidWithoutShowMessage = () => {
+  const nameRegisterValid = hasValueWithoutShowMessage(inputName);
+  const nicknameRegisterValid = hasValueWithoutShowMessage(inputNickname);
+  const passwordRegisterValid = hasValueWithoutShowMessage(
+    inputPasswordUserRegister
+  );
+  const passwordConfirmationRegisterValid =
+    validadePasswordConfirmationWithoutShowMessage(
+      inputPasswordUserConfirmRegister
+    );
+
+  const validateFormFields =
+    nameRegisterValid &&
+    nicknameRegisterValid &&
+    passwordRegisterValid &&
+    passwordConfirmationRegisterValid;
+
+  return validateFormFields;
+};
+
+const isLoginFormFieldsValidWithoutShowMessage = () => {
+  const loginInputsValid = [];
+  formLoginInputs.forEach((loginInput, index) => {
+    loginInputsValid[index] = hasValueWithoutShowMessage(loginInput);
+  });
+
+  const inputValid = element => element === false;
+
+  isLoginFormFieldsValid = loginInputsValid.some(inputValid);
+
+  console.log(isLoginFormFieldsValid);
+
+  return isLoginFormFieldsValid;
+};
+
+const validateEachFormRegisterInput = () => {
+  inputName.addEventListener('blur', () => {
+    hasValue(inputName, NAME_REQUIRED);
+    if (isRegisterFormFieldsValidWithoutShowMessage()) {
+      enableButton(registerButton);
+    } else {
+      disableButton(registerButton);
+    }
+  });
+
+  inputNickname.addEventListener('blur', () => {
+    hasValue(inputNickname, NICKNAME_REQUIRED);
+    if (isRegisterFormFieldsValidWithoutShowMessage()) {
+      enableButton(registerButton);
+    } else {
+      disableButton(registerButton);
+    }
+  });
+
+  inputPasswordUserRegister.addEventListener('blur', () => {
+    hasValue(inputPasswordUserRegister, PASSWORD_REQUIRED);
+    if (isRegisterFormFieldsValidWithoutShowMessage()) {
+      enableButton(registerButton);
+    } else {
+      disableButton(registerButton);
+    }
+  });
+
+  inputPasswordUserConfirmRegister.addEventListener('blur', () => {
+    validadePasswordConfirmation(
+      inputPasswordUserConfirmRegister,
+      PASSWORDCONFIRMATION_REQUIRED,
+      PASSWORDCONFIRMATION_INVALID
+    );
+    if (isRegisterFormFieldsValidWithoutShowMessage()) {
+      enableButton(registerButton);
+    } else {
+      disableButton(registerButton);
+    }
+  });
+};
+
+const validateEachFormLoginInput = () => {
+  formLoginInputs.forEach(loginInput => {
+    loginInput.addEventListener('blur', () => {
+      hasValue(loginInput, CREDENTIALS_REQUIRED);
+      if (!isLoginFormFieldsValidWithoutShowMessage()) {
+        enableButton(loginUserButton);
+      } else {
+        disableButton(loginUserButton);
+      }
+    });
+  });
+};
+
+const validadePasswordConfirmation = (input, requiredMsg, invalidMsg) => {
+  if (!hasValue(input, requiredMsg)) {
+    return false;
+  }
+
+  const password = inputPasswordUserRegister.value;
+  const passwordConfirmation = inputPasswordUserConfirmRegister.value;
+
+  if (password === passwordConfirmation) {
+    return true;
+  }
+
+  return showError(input, invalidMsg);
+};
+
+const validadePasswordConfirmationWithoutShowMessage = input => {
+  if (!hasValueWithoutShowMessage(input)) {
+    return false;
+  }
+
+  const password = inputPasswordUserRegister.value;
+  const passwordConfirmation = inputPasswordUserConfirmRegister.value;
+
+  if (password === passwordConfirmation) {
+    return true;
+  }
+
+  return false;
+};
+
 window.addEventListener('click', async event => {
   if (event.target === registerTaskModal || event.target === closeModalButton) {
     event.preventDefault();
@@ -455,21 +681,13 @@ window.addEventListener('click', async event => {
   }
 });
 
-const renderButtonsWithActions = () => {
-  const deleteTaskButton = document.querySelectorAll('.deleteTaskButton');
-  addActionToDeleteTaskButton(deleteTaskButton);
-
-  const openModalEditTaskButton = document.querySelectorAll(
-    '.openModalEditTaskButton'
-  );
-  addActionToOpenModalEditTaskButton(openModalEditTaskButton);
-};
-
 window.addEventListener('load', async () => {
   const tasks = await getTasks();
   renderTasks(tasks);
   renderButtonsWithActions();
 });
+
+loginPage.addEventListener('load', validateEachFormLoginInput());
 
 openModalNewTaskButton.addEventListener('click', () => {
   modalEventButton.value = 'newTask';
@@ -480,7 +698,7 @@ openModalNewTaskButton.addEventListener('click', () => {
 modalEventButton.addEventListener('click', async () => {
   if (isFormFieldsValid()) {
     if (modalEventButton.value === 'newTask') {
-      disableButton();
+      disableButton(modalEventButton);
       const newTask = insertTaskDetailsInObject();
       await addNewTask(newTask);
       removeBorderFormInputs(inputs);
@@ -528,19 +746,37 @@ modalEventButton.addEventListener('click', async () => {
   }
 })*/
 
-const showResponseAPI = response => {
-  responseAPI.innerHTML = `${response}`;
-  responseAPI.style.display = 'block';
-  setInterval(() => {
-    response.innerHTML = '';
-    responseAPI.style.display = 'none';
-  }, 3000);
-};
+registerUserButton.addEventListener('click', () => {
+  closeModal(loginPage);
+  openModal(registerPage);
+});
 
-const setSucessColor = () => {
-  responseAPI.style.color = '#27AE68';
-};
+registerButton.addEventListener('click', async () => {
+  if (isRegisterFormFieldsValid()) {
+    const newUser = insertUserDetailsInObject();
+    const users = await getUsers();
+    const isRegistered = checkUserIsRegistered(users, inputNickname);
 
-const setFailColor = () => {
-  responseAPI.style.color = '#EB5757';
-};
+    if (isRegistered) {
+      loginMessage.textContent = 'Usuário já registrado!';
+      setInterval(() => {
+        loginMessage.textContent = '';
+      }, 3000);
+    } else {
+      await addNewUser(newUser);
+    }
+
+    closeModal(registerPage);
+    openModal(loginPage);
+  }
+});
+
+closeRegisterUserModalButton.addEventListener('click', () => {
+  closeModal(registerPage);
+  openModal(loginPage);
+});
+
+loginUserButton.addEventListener('click', async () => {
+  users = await getUsers();
+  console.log(users);
+});

@@ -50,7 +50,6 @@ tbody > tr:nth-child(even) {
 }
 
 .openModalNewTaskButton:hover,
-.loginUserButton:hover,
 .registerUserButton:hover {
   background-color: #68519d;
   color: white;
@@ -128,12 +127,14 @@ option {
   color: #2c2661;
 }
 
-.closeModalButton {
+.closeModalButton,
+.closeRegisterUserModalButton {
   color: #828282;
   text-decoration: none;
 }
 
-.closeModalButton:hover {
+.closeModalButton:hover,
+.closeRegisterUserModalButton:hover {
   text-decoration: underline;
   color: #828282;
 }

@@ -66,7 +66,7 @@
       </div> -->
 
       <div class="container-xxl">
-        <section class="loginPage p-5">
+        <section class="loginPage p-5" id="loginPage">
           <form class="p-4 m-auto formLoginPage">
             <div class="mb-3">
               <div class="h3">Bem-vindo ao Gerenciador de Tarefas!</div>
@@ -110,12 +110,12 @@
             </div>
   
             <div class="mb-3">
-              <label class="form-label" for="inputUserNameRegister">
+              <label class="form-label" for="inputNickname">
                 Usuário
               </label>
               <input
                 class="form-control formRegisterInputs"
-                id="inputUserNameRegister"
+                id="inputNickname"
               />
               <small></small>
             </div>
@@ -144,12 +144,15 @@
             </div>
             <div class="row">
               <div class="col-6">
-                <a class="closeModalButton"> Cancelar </a>
+                <a class="closeRegisterUserModalButton"> Cancelar </a>
               </div>
               <div class="col-6 text-end">
                 <button type="button" class="registerButton">
                   Cadastrar
                 </button>
+              </div>
+              <div class="text-center">
+                <small id="loginMessage"></small>
               </div>
             </div>
           </form>

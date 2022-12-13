@@ -140,7 +140,7 @@ option {
 }
 
 .form-select {
-  background-image: url(../assets/select-detail.svg);
+  background-image: url(../assets/images/select-detail.svg);
 }
 
 td[value='Concluído'] {

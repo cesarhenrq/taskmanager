@@ -469,7 +469,7 @@ const isCurrentUserTasks = task => task.userID === userLogedID;
 window.addEventListener('load', async () => {
   logedUser = await getLogedUser();
   userLogedID = logedUser[0].userID;
-  divUser.innerHTML = `${logedUser[0].name}`;
+  divUser.innerHTML += `${logedUser[0].name}`;
   const tasks = await getTasks();
   const currentUserTasks = tasks.filter(isCurrentUserTasks);
   renderTasks(currentUserTasks);

@@ -66,6 +66,7 @@ tbody > tr:nth-child(even) {
 
 #logoutButton:hover {
   text-decoration: underline;
+  cursor: pointer;
 }
 
 .openModalEditTaskButton,

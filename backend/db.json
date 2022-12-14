@@ -83,15 +83,13 @@
       "nickname": "teste",
       "password": "123456",
       "id": 3
+    },
+    {
+      "name": "Alberto Timóteo",
+      "nickname": "alberto",
+      "password": "123456",
+      "id": 4
     }
   ],
-  "logedUser": [
-    {
-      "name": "César Henrique",
-      "nickname": "cesarhenrq",
-      "password": "123456",
-      "userID": 1,
-      "id": 3
-    }
-  ]
+  "logedUser": []
 }

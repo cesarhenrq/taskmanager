@@ -93,6 +93,8 @@ const getUsers = async () => {
 };
 
 const openModal = modal => {
+  restartInputs(formLoginInputs);
+  removeBorderFormInputs(formLoginInputs);
   modal.style.display = 'block';
   if (modal.id === 'taskEventModal') {
     validateEachInput();

@@ -15,6 +15,7 @@ const PASSWORDCONFIRMATION_INVALID = 'As senhas devem ser iguais';
 const CREDENTIALS_REQUIRED = 'Esse campo não pode ficar vazio';
 
 const urlUsers = 'http://localhost:3000/users';
+const urlLogedUser = 'http://localhost:3000/logedUser';
 
 const registerUserButton = document.querySelector('.registerUserButton');
 const registerButton = document.querySelector('.registerButton');
@@ -47,6 +48,24 @@ const inputPasswordLogin = document.querySelector('#inputPasswordLogin');
 const smalls = document.querySelectorAll('small');
 
 // const darkModeToggle = document.querySelector('#darkmode-toggle');
+
+const addLogedUser = async newLogedUser => {
+  const { name, nickname, password, id } = newLogedUser;
+
+  await fetch(urlLogedUser, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      name: name,
+      nickname: nickname,
+      password: password,
+      userID: id,
+    }),
+  });
+};
 
 const addNewUser = async newUser => {
   const { name, nickname, password } = newUser;
@@ -160,6 +179,14 @@ const checkPasswordIsCorrect = (users, inputPassword, inputNickname) => {
   const currentUserPassword = currentUser[0].password;
 
   return password === currentUserPassword;
+};
+
+const getLogedUser = (users, input) => {
+  const nickname = input.value;
+  const currentUser = users.filter(user => {
+    return user.nickname === nickname;
+  });
+  return currentUser;
 };
 
 const showMessage = (input, message, type) => {
@@ -412,7 +439,6 @@ closeRegisterUserModalButton.addEventListener('click', () => {
 
 loginUserButton.addEventListener('click', async () => {
   const users = await getUsers();
-  console.log(checkUserIsRegistered(users, inputNicknameLogin));
   if (checkUserIsRegistered(users, inputNicknameLogin)) {
     const isPasswordCorrect = checkPasswordIsCorrect(
       users,
@@ -420,8 +446,10 @@ loginUserButton.addEventListener('click', async () => {
       inputNicknameLogin
     );
     if (isPasswordCorrect) {
+      const logedUser = getLogedUser(users, inputNicknameLogin);
+      console.log(logedUser);
+      await addLogedUser(logedUser[0]);
       window.location.href = './taskmenager.html';
-      console.log('logado');
     } else {
       loginMessage.textContent = 'Senha incorreta!';
       setInterval(() => {

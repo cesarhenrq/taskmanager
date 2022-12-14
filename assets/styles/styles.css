@@ -57,9 +57,15 @@ tbody > tr:nth-child(even) {
 
 .appName,
 .modalTitle,
-.mb-3 > .h3 {
+.mb-3 > .h3,
+#divUser,
+#logoutButton {
   color: #68519d;
   font-weight: bold;
+}
+
+#logoutButton:hover {
+  text-decoration: underline;
 }
 
 .openModalEditTaskButton,
@@ -99,9 +105,15 @@ tr {
 
 .formLoginPage,
 .formRegisterPage {
+  position: absolute;
+  margin: 0;
+  top: 50%;
+  transform: translateY(-50%);
   border: 1px solid #68519d;
   border-radius: 0.5rem;
   width: 35%;
+  left: 32.5%;
+  box-shadow: 2px 2px 2px 1px rgba(48, 2, 54, 0.2);
 }
 
 .formInputs {
@@ -140,7 +152,7 @@ option {
 }
 
 .form-select {
-  background-image: url(../assets/images/select-detail.svg);
+  background-image: url(../images/select-detail.svg);
 }
 
 td[value='Concluído'] {

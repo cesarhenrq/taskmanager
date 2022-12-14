@@ -7,7 +7,11 @@ class Task {
   }
 }
 
+let userLogedID = null;
+let logedUser = null;
+
 const urlTasks = 'http://localhost:3000/tasks';
+const urlLogedUser = 'http://localhost:3000/logedUser';
 
 const NUMBER_REQUIRED = 'Por favor insira o número da tarefa';
 const NUMBER_INVALID = 'Por favor insira somente números';
@@ -24,6 +28,7 @@ const RESPONSE_ADD_FAIL = 'Não foi possível adicionar a tarefa!';
 
 const closeModalButton = document.querySelector('.closeModalButton');
 const modalEventButton = document.querySelector('.modalEventButton');
+const logoutButton = document.querySelector('#logoutButton');
 
 const registerTaskModal = document.querySelector('.registerTaskModal');
 const editTaskModal = document.querySelector('.editTaskModal');
@@ -47,6 +52,21 @@ const form = document.querySelector('.form');
 const modalTitle = document.querySelector('.modalTitle');
 const responseAPI = document.querySelector('.responseAPI');
 const smalls = document.querySelectorAll('small');
+const divUser = document.querySelector('#divUser');
+
+const getLogedUser = async () => {
+  const response = await fetch(urlLogedUser);
+
+  let logedUser = await response.json();
+
+  return logedUser;
+};
+
+const deleteLogedUser = async id => {
+  await fetch(`${urlLogedUser}/${id}`, {
+    method: 'DELETE',
+  });
+};
 
 const addNewTask = async newTask => {
   const { taskNumber, description, deadline, status } = newTask;
@@ -63,6 +83,7 @@ const addNewTask = async newTask => {
         description: description,
         deadline: deadline,
         status: status,
+        userID: userLogedID,
       }),
     });
     setSucessColor();
@@ -236,7 +257,8 @@ const addActionToDeleteTaskButton = deleteTaskButton => {
       await deleteTask(idTask);
 
       tasks = await getTasks();
-      renderTasks(tasks);
+      const currentUserTasks = tasks.filter(isCurrentUserTasks);
+      renderTasks(currentUserTasks);
       renderButtonsWithActions();
     });
   });
@@ -254,6 +276,59 @@ const addActionToOpenModalEditTaskButton = openModalEditTaskButton => {
       openModal(editTaskModal);
       enableButton(modalEventButton);
     });
+  });
+};
+
+const openModal = modal => {
+  modal.style.display = 'block';
+  if (modal.id === 'taskEventModal') {
+    validateEachInput();
+  } else if (modal.id === 'loginPage') {
+    validateEachFormLoginInput();
+  } else {
+    validateEachFormRegisterInput();
+  }
+};
+
+const closeModal = modal => {
+  modal.style.display = 'none';
+  if (modal.id === 'loginPage') {
+    restartInputs(formRegisterInputs);
+    removeBorderFormInputs(formRegisterInputs);
+    removeTextSmalls(smalls);
+    disableButton(registerButton);
+  } else if (modal.id === 'taskEventModal') {
+    restartInputs(inputs);
+    removeBorderFormInputs(inputs);
+    removeTextSmalls(smalls);
+    disableButton(modalEventButton);
+  }
+};
+
+const enableButton = button => {
+  button.classList.add('enabledButton');
+};
+
+const disableButton = button => {
+  button.classList.remove('enabledButton');
+};
+
+const removeTextSmalls = smalls => {
+  smalls.forEach(small => {
+    small.innerHTML = '';
+  });
+};
+
+const removeBorderFormInputs = inputs => {
+  inputs.forEach(input => {
+    input.classList.remove('error');
+    input.classList.remove('success');
+  });
+};
+
+const restartInputs = inputs => {
+  inputs.forEach(input => {
+    input.value = '';
   });
 };
 
@@ -389,9 +464,15 @@ const isFormFieldsValidWithoutShowMessage = () => {
   return validateFormFields;
 };
 
+const isCurrentUserTasks = task => task.userID === userLogedID;
+
 window.addEventListener('load', async () => {
+  logedUser = await getLogedUser();
+  userLogedID = logedUser[0].userID;
+  divUser.innerHTML = `${logedUser[0].name}`;
   const tasks = await getTasks();
-  renderTasks(tasks);
+  const currentUserTasks = tasks.filter(isCurrentUserTasks);
+  renderTasks(currentUserTasks);
   renderButtonsWithActions();
 });
 
@@ -400,21 +481,17 @@ window.addEventListener('click', async event => {
     event.preventDefault();
     closeModal(registerTaskModal);
 
-    let tasks = await getTasks();
-    renderTasks(tasks);
-
+    const tasks = await getTasks();
+    const currentUserTasks = tasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserTasks);
     renderButtonsWithActions();
   }
 });
 
 openModalNewTaskButton.addEventListener('click', () => {
-  console.log('passou 1');
   modalEventButton.value = 'newTask';
-  console.log('passou 2');
   modalTitle.innerHTML = 'Adicionar nova tarefa';
-  console.log('passou 3');
   openModal(registerTaskModal);
-  console.log('passou 4');
 });
 
 modalEventButton.addEventListener('click', async () => {
@@ -426,66 +503,20 @@ modalEventButton.addEventListener('click', async () => {
       removeBorderFormInputs(inputs);
       restartInputs(inputs);
       const tasks = await getTasks();
-      renderTasks(tasks);
+      const currentUserTasks = tasks.filter(isCurrentUserTasks);
+      renderTasks(currentUserTasks);
     } else if (modalEventButton.value === 'editTask') {
       const editedTask = insertTaskDetailsInObject();
       await updateTask(idTask, editedTask);
       removeBorderFormInputs(inputs);
       const tasks = await getTasks();
-      renderTasks(tasks);
+      const currentUserTasks = tasks.filter(isCurrentUserTasks);
+      renderTasks(currentUserTasks);
     }
   }
 });
 
-const openModal = modal => {
-  modal.style.display = 'block';
-  if (modal.id === 'taskEventModal') {
-    validateEachInput();
-  } else if (modal.id === 'loginPage') {
-    validateEachFormLoginInput();
-  } else {
-    validateEachFormRegisterInput();
-  }
-};
-
-const closeModal = modal => {
-  modal.style.display = 'none';
-  if (modal.id === 'loginPage') {
-    restartInputs(formRegisterInputs);
-    removeBorderFormInputs(formRegisterInputs);
-    removeTextSmalls(smalls);
-    disableButton(registerButton);
-  } else if (modal.id === 'taskEventModal') {
-    restartInputs(inputs);
-    removeBorderFormInputs(inputs);
-    removeTextSmalls(smalls);
-    disableButton(modalEventButton);
-  }
-};
-
-const enableButton = button => {
-  button.classList.add('enabledButton');
-};
-
-const disableButton = button => {
-  button.classList.remove('enabledButton');
-};
-
-const removeTextSmalls = smalls => {
-  smalls.forEach(small => {
-    small.innerHTML = '';
-  });
-};
-
-const removeBorderFormInputs = inputs => {
-  inputs.forEach(input => {
-    input.classList.remove('error');
-    input.classList.remove('success');
-  });
-};
-
-const restartInputs = inputs => {
-  inputs.forEach(input => {
-    input.value = '';
-  });
-};
+logoutButton.addEventListener('click', async () => {
+  deleteLogedUser(logedUser[0].id);
+  window.location.href = './index.html';
+});

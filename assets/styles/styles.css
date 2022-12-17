@@ -41,16 +41,16 @@ tbody > tr:nth-child(even) {
 .modalEventButton,
 .loginUserButton,
 .registerUserButton,
-.registerButton {
+.registerButton, .searchButtons {
   background-color: white;
   color: #68519d;
   border: 1px solid #68519d;
   border-radius: 5rem;
-  padding: 0.3rem 1.6rem;
+  padding: 0.3rem 1rem;
 }
 
 .openModalNewTaskButton:hover,
-.registerUserButton:hover {
+.registerUserButton:hover, .searchButtons:hover {
   background-color: #68519d;
   color: white;
 }

@@ -7,8 +7,12 @@ class Task {
   }
 }
 
+let idTask = null;
+
 let userLogedID = null;
 let logedUser = null;
+
+let stateTableTask = 'all'
 
 const urlTasks = 'http://localhost:3000/tasks';
 const urlLogedUser = 'http://localhost:3000/logedUser';
@@ -39,10 +43,16 @@ const inputNumber = document.querySelector('#inputNumber');
 const inputDescription = document.querySelector('#inputDescription');
 const inputDate = document.querySelector('#inputDate');
 const inputTaskStatus = document.querySelector('#taskStatusInput');
+const findTasksInput = document.querySelector('#findTasksInput')
 
 const openModalNewTaskButton = document.querySelector(
   '.openModalNewTaskButton'
 );
+const getAllTasksButton = document.querySelector('#getAllTasksButton')
+const getCompletedTasksButton = document.querySelector('#getCompletedTasksButton')
+const getInProgressTasksButton = document.querySelector('#getInProgressTasksButton')
+const getStoppedTasksButton = document.querySelector('#getStoppedTasksButton')
+const getLatedTasksButton = document.querySelector('#getLatedTasksButton')
 
 const tableTasksBody = document.querySelector('.tableTasksBody');
 const table = document.querySelector('table');
@@ -102,6 +112,54 @@ const getTasks = async () => {
   return tasks;
 };
 
+const getCompletedTasks = async () => {
+  const response = await fetch(`${urlTasks}?status_like=Concluído`);
+
+  let tasks = await response.json();
+
+  return tasks;
+};
+
+const getInProgressTasks = async () => {
+  const response = await fetch(`${urlTasks}?status_like=Em andamento`);
+
+  let tasks = await response.json();
+
+  return tasks;
+};
+
+const getStoppedTasks = async () => {
+  const response = await fetch(`${urlTasks}?status_like=Parado`);
+
+  let tasks = await response.json();
+
+  return tasks;
+};
+
+const getLatedTasks = async () => {
+  const response = await fetch(urlTasks);
+
+  let tasks = await response.json();
+  
+  const today = new Date()
+  console.log(today.getDate())
+  
+  latedTasks = tasks.filter((task) => {
+    let deadline = new Date (task.deadline)
+    return deadline < today
+  })
+
+  return latedTasks;
+}
+
+const searchTasks = async (searchedTask) => {
+  const response = await fetch(`${urlTasks}?description_like=${searchedTask}`);
+
+  let tasks = await response.json();
+
+  return tasks;
+};
+
 const deleteTask = async id => {
   try {
     await fetch(`${urlTasks}/${id}`, {
@@ -126,6 +184,7 @@ const updateTask = async (id, updatedTask) => {
         description: description,
         deadline: deadline,
         status: status,
+        userID: userLogedID,
       }),
     });
     setSucessColor();
@@ -146,11 +205,12 @@ const renderTasks = tasks => {
       deadline: deadline,
       status: status,
     } = task;
+    deadline = new Date(deadline)
     tableTasksBody.innerHTML += `
     <tr>
       <td>${taskNumber}</td>
       <td>${description}</td>
-      <td>${deadline}</td>
+      <td>${deadline.getDate() + 1}/${deadline.getMonth() + 1}/${deadline.getFullYear()}</td>
       <td value="${status}">${status}</td>
       <td>
         <button type="button" class="openModalEditTaskButton">
@@ -231,7 +291,7 @@ const validateEachInput = () => {
   });
 
   inputDate.addEventListener('blur', () => {
-    validateTaskDeadline(inputDate, DEADLINE_REQUIRED, DEADLINE_INVALID);
+    hasValue(inputDate, DEADLINE_REQUIRED);
     if (isFormFieldsValidWithoutShowMessage()) {
       enableButton(modalEventButton);
     } else {
@@ -252,14 +312,61 @@ const validateEachInput = () => {
 const addActionToDeleteTaskButton = deleteTaskButton => {
   deleteTaskButton.forEach((deleteButton, index) => {
     deleteButton.addEventListener('click', async () => {
-      tasks = await getTasks();
-      idTask = tasks[index].id;
-      await deleteTask(idTask);
+      if (stateTableTask === 'all') {
+        let tasks = await getTasks();
+        idTask = tasks[index].id;
+        await deleteTask(idTask);
 
-      tasks = await getTasks();
-      const currentUserTasks = tasks.filter(isCurrentUserTasks);
-      renderTasks(currentUserTasks);
-      renderButtonsWithActions();
+        tasks = await getTasks();
+        const currentUserTasks = tasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserTasks);
+        renderButtonsWithActions();
+      } else if (stateTableTask === 'completed') {
+        let completedTasks = await getCompletedTasks();
+        idTask = completedTasks[index].id;
+        await deleteTask(idTask);
+        
+        completedTasks = await getCompletedTasks()
+        const currentUserInProgressTasks = completedTasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserInProgressTasks);
+        renderButtonsWithActions();
+      } else if (stateTableTask === 'inprogress') {
+        let inProgressTasks = await getInProgressTasks();
+        idTask = inProgressTasks[index].id;
+        await deleteTask(idTask);
+
+        inProgressTasks = await getInProgressTasks()
+        const currentUserInProgressTasks = inProgressTasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserInProgressTasks);
+        renderButtonsWithActions();
+      } else if (stateTableTask === 'stopped') {
+        let stoppedTasks = await getStoppedTasks();
+        idTask = stoppedTasks[index].id;
+        await deleteTask(idTask);
+
+        stoppedTasks = await getStoppedTasks()
+        const currentUserStoppedTasks = stoppedTasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserStoppedTasks);
+        renderButtonsWithActions();
+      } else if (stateTableTask === 'search') {
+        let tasks = await searchTasks();
+        idTask = tasks[index].id;
+        await deleteTask(idTask);
+
+        tasks = await searchTasks(findTasksInput.value);
+        const currentUserTasks = tasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserTasks);
+        renderButtonsWithActions();
+      } else {
+        let tasks = await getLatedTasks();
+        idTask = tasks[index].id;
+        await deleteTask(idTask);
+        
+        tasks = await getLatedTasks();
+        const currentUserTasks = tasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserTasks);
+        renderButtonsWithActions();
+      }
     });
   });
 };
@@ -267,10 +374,40 @@ const addActionToDeleteTaskButton = deleteTaskButton => {
 const addActionToOpenModalEditTaskButton = openModalEditTaskButton => {
   openModalEditTaskButton.forEach((openModalEdit, index) => {
     openModalEdit.addEventListener('click', async () => {
-      tasks = await getTasks();
-      task = tasks[index];
-      idTask = tasks[index].id;
-      addTaskDetailsToModalEditTask(task);
+      if (stateTableTask === 'all') {
+        let tasks = await getTasks();
+        let task = tasks[index];
+        idTask = tasks[index].id;
+        addTaskDetailsToModalEditTask(task)
+
+      } else if (stateTableTask === 'completed') {
+        let completedTasks = await getCompletedTasks();
+        task = completedTasks[index];
+        idTask = completedTasks[index].id;
+        addTaskDetailsToModalEditTask(task)
+      } else if (stateTableTask === 'inprogress') {
+        let inProgressTasks = await getInProgressTasks();
+        task = inProgressTasks[index];
+        idTask = inProgressTasks[index].id;
+        addTaskDetailsToModalEditTask(task)
+
+      } else if (stateTableTask === 'stopped') {
+        let stoppedTasks = await getStoppedTasks();
+        task = stoppedTasks[index];
+        idTask = stoppedTasks[index].id;
+        addTaskDetailsToModalEditTask(task)
+
+      } else if (stateTableTask === 'search') {
+        let searchedTasks = await searchTasks(findTasksInput.value);
+        task = searchedTasks[index];
+        idTask = searchedTasks[index].id;
+        addTaskDetailsToModalEditTask(task)
+      } else {
+        let latedTasks = await getLatedTasks();
+        task = latedTasks[index];
+        idTask = latedTasks[index].id;
+        addTaskDetailsToModalEditTask(task)
+      }
       modalEventButton.value = 'editTask';
       modalTitle.innerHTML = 'Editar tarefa';
       openModal(editTaskModal);
@@ -370,7 +507,7 @@ const hasValueWithoutShowMessage = input => {
   return true;
 };
 
-const validateTaskDeadlineRegex = input => {
+/*const validateTaskDeadlineRegex = input => {
   const taskDeadline = input.value;
   const taskDeadlineRegex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
 
@@ -387,7 +524,7 @@ const validateTaskDeadline = (input, requiredMsg, invalidMsg) => {
   }
 
   return showError(input, invalidMsg);
-};
+};*/
 
 const validateTaskDeadlineWithoutShowMessage = input => {
   if (!hasValueWithoutShowMessage(input)) {
@@ -439,10 +576,9 @@ const isFormFieldsValid = () => {
     NUMBER_INVALID
   );
   const descriptionValid = hasValue(inputDescription, DESCRIPTION_REQUIRED);
-  const taskDeadlineValid = validateTaskDeadline(
+  const taskDeadlineValid = hasValue(
     inputDate,
-    DEADLINE_REQUIRED,
-    DEADLINE_INVALID
+    DEADLINE_REQUIRED
   );
   const taskStatusValid = hasValue(inputTaskStatus, STATUS_REQUIRED);
 
@@ -455,7 +591,7 @@ const isFormFieldsValid = () => {
 const isFormFieldsValidWithoutShowMessage = () => {
   const numberTaskValid = validateTaskNumberWithoutShowMessage(inputNumber);
   const descriptionValid = hasValueWithoutShowMessage(inputDescription);
-  const taskDeadlineValid = validateTaskDeadlineWithoutShowMessage(inputDate);
+  const taskDeadlineValid = hasValueWithoutShowMessage(inputDate);
   const taskStatusValid = hasValueWithoutShowMessage(inputTaskStatus);
 
   const validateFormFields =
@@ -480,11 +616,28 @@ window.addEventListener('click', async event => {
   if (event.target === registerTaskModal || event.target === closeModalButton) {
     event.preventDefault();
     closeModal(registerTaskModal);
-
-    const tasks = await getTasks();
-    const currentUserTasks = tasks.filter(isCurrentUserTasks);
-    renderTasks(currentUserTasks);
-    renderButtonsWithActions();
+    if (stateTableTask === 'all') {
+      const tasks = await getTasks();
+      const currentUserTasks = tasks.filter(isCurrentUserTasks);
+      renderTasks(currentUserTasks);
+      renderButtonsWithActions();
+    } else if (stateTableTask === 'inprogress') {
+      const inProgressTasks = await getInProgressTasks()
+      const currentUserInProgressTasks = inProgressTasks.filter(isCurrentUserTasks);
+      renderTasks(currentUserInProgressTasks);
+      renderButtonsWithActions();
+    } else if (stateTableTask === 'stopped') {
+      stateTableTask = 'stopped'
+      const stoppedTasks = await getStoppedTasks()
+      const currentUserStoppedTasks = stoppedTasks.filter(isCurrentUserTasks);
+      renderTasks(currentUserStoppedTasks);
+      renderButtonsWithActions();
+    } else if (stateTableTask === 'search') {
+      const tasks = await searchTasks(findTasksInput.value);
+      const currentUserTasks = tasks.filter(isCurrentUserTasks);
+      renderTasks(currentUserTasks);
+      renderButtonsWithActions();
+    }
   }
 });
 
@@ -506,12 +659,53 @@ modalEventButton.addEventListener('click', async () => {
       const currentUserTasks = tasks.filter(isCurrentUserTasks);
       renderTasks(currentUserTasks);
     } else if (modalEventButton.value === 'editTask') {
-      const editedTask = insertTaskDetailsInObject();
+      if (stateTableTask === 'all') {
+        const editedTask = insertTaskDetailsInObject();
+        await updateTask(idTask, editedTask);
+      
+        tasks = await getTasks();
+        const currentUserTasks = tasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserTasks);
+        renderButtonsWithActions();
+      } else if (stateTableTask === 'completed') {
+        const editedTask = insertTaskDetailsInObject();
+        await updateTask(idTask, editedTask);
+      
+        completedTasks = await getCompletedTasks()
+        const currentUserInProgressTasks = completedTasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserInProgressTasks);
+        renderButtonsWithActions();
+      } else if (stateTableTask === 'inprogress') {
+        const editedTask = insertTaskDetailsInObject();
+        await updateTask(idTask, editedTask);
+      
+        inProgressTasks = await getInProgressTasks()
+        const currentUserInProgressTasks = inProgressTasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserInProgressTasks);
+        renderButtonsWithActions();
+      } else if (stateTableTask === 'stopped') {
+        const editedTask = insertTaskDetailsInObject();
+        await updateTask(idTask, editedTask);
+      
+        stoppedTasks = await getStoppedTasks()
+        const currentUserStoppedTasks = stoppedTasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserStoppedTasks);
+        renderButtonsWithActions();
+      } else if (stateTableTask === 'search') {
+        const editedTask = insertTaskDetailsInObject();
+        await updateTask(idTask, editedTask);
+      
+        tasks = await searchTasks(findTasksInput.value);
+        const currentUserTasks = tasks.filter(isCurrentUserTasks);
+        renderTasks(currentUserTasks);
+        renderButtonsWithActions();
+      }
+      /*const editedTask = insertTaskDetailsInObject();
       await updateTask(idTask, editedTask);
       removeBorderFormInputs(inputs);
       const tasks = await getTasks();
       const currentUserTasks = tasks.filter(isCurrentUserTasks);
-      renderTasks(currentUserTasks);
+      renderTasks(currentUserTasks);*/
     }
   }
 });
@@ -520,3 +714,51 @@ logoutButton.addEventListener('click', async () => {
   deleteLogedUser(logedUser[0].id);
   window.location.href = './index.html';
 });
+
+getCompletedTasksButton.addEventListener('click', async () => {
+  stateTableTask = 'completed'
+  const completedTasks = await getCompletedTasks()
+  const currentUserCompletedTasks = completedTasks.filter(isCurrentUserTasks);
+  renderTasks(currentUserCompletedTasks);
+  renderButtonsWithActions();
+})
+
+getInProgressTasksButton.addEventListener('click', async () => {
+  stateTableTask = 'inprogress'
+  const inProgressTasks = await getInProgressTasks()
+  const currentUserInProgressTasks = inProgressTasks.filter(isCurrentUserTasks);
+  renderTasks(currentUserInProgressTasks);
+  renderButtonsWithActions();
+})
+
+getStoppedTasksButton.addEventListener('click', async () => {
+  stateTableTask = 'stopped'
+  const stoppedTasks = await getStoppedTasks()
+  const currentUserStoppedTasks = stoppedTasks.filter(isCurrentUserTasks);
+  renderTasks(currentUserStoppedTasks);
+  renderButtonsWithActions();
+})
+
+getAllTasksButton.addEventListener('click', async () => {
+  stateTableTask = 'all'
+  const tasks = await getTasks();
+  const currentUserTasks = tasks.filter(isCurrentUserTasks);
+  renderTasks(currentUserTasks);
+  renderButtonsWithActions();
+})
+
+getLatedTasksButton.addEventListener('click', async () => {
+  stateTableTask = 'lated'
+  const tasks = await getLatedTasks();
+  const currentUserTasks = tasks.filter(isCurrentUserTasks);
+  renderTasks(currentUserTasks);
+  renderButtonsWithActions();
+})
+
+findTasksInput.addEventListener('keyup', async () => {
+  stateTableTask = 'search'
+  const tasks = await searchTasks(findTasksInput.value);
+  const currentUserTasks = tasks.filter(isCurrentUserTasks);
+  renderTasks(currentUserTasks);
+  renderButtonsWithActions();
+})

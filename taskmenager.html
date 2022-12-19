@@ -89,13 +89,15 @@
             </button>
           </div>
         </div>
-        <div class="row mb-3">
-          <button class="col-2 searchButtons" type="button" id="getAllTasksButton">Todas</button>
-          <button class="col-2 searchButtons" type="button" id="getCompletedTasksButton">Concluídas</button>
-          <button class="col-2 searchButtons" type="button" id="getInProgressTasksButton">Em andamento</button>
-          <button class="col-2 searchButtons" type="button" id="getStoppedTasksButton">Paradas</button>
-          <button class="col-2 searchButtons" type="button" id="getLatedTasksButton">Atrasadas</button>
-          <input class="col-2" type="text" id="findTasksInput"/>
+        <div class="mb-3 d-flex justify-content-between">
+          <button class="searchButtons" type="button" id="getAllTasksButton">Todas</button>
+          <button class="searchButtons" type="button" id="getCompletedTasksButton">Concluídas</button>
+          <button class="searchButtons" type="button" id="getInProgressTasksButton">Em andamento</button>
+        </div>
+        <div class="mb-3 d-flex justify-content-between">
+          <button class="searchButtons" type="button" id="getStoppedTasksButton">Paradas</button>
+          <button class="searchButtons" type="button" id="getLatedTasksButton">Atrasadas</button>
+          <input type="text" id="findTasksInput" />
         </div>
         <div class="table-responsive">
           <table class="table table-borderless table-hover">
@@ -110,6 +112,17 @@
             </thead>
             <tbody class="tableTasksBody"></tbody>
           </table>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <div>
+            <button type="button" class="previousPageButton pagenationButtons">Anterior
+            </button>
+          </div>
+          <div>
+            <button type="button" class="nextPageButton pagenationButtons">Próxima
+            </button>
+          </div>
         </div>
       </div>
       <div class="polygonContainer">

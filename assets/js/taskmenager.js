@@ -12,6 +12,8 @@ let idTask = null;
 let userLogedID = null;
 let logedUser = null;
 
+let currentPage = 1
+
 let stateTableTask = 'all'
 
 const urlTasks = 'http://localhost:3000/tasks';
@@ -53,6 +55,8 @@ const getCompletedTasksButton = document.querySelector('#getCompletedTasksButton
 const getInProgressTasksButton = document.querySelector('#getInProgressTasksButton')
 const getStoppedTasksButton = document.querySelector('#getStoppedTasksButton')
 const getLatedTasksButton = document.querySelector('#getLatedTasksButton')
+const nextPageButton = document.querySelector('.nextPageButton')
+const previousPageButton = document.querySelector('.previousPageButton')
 
 const tableTasksBody = document.querySelector('.tableTasksBody');
 const table = document.querySelector('table');
@@ -89,7 +93,7 @@ const addNewTask = async newTask => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        taskNumber: taskNumber,
+        taskNumber: Number(taskNumber),
         description: description,
         deadline: deadline,
         status: status,
@@ -105,7 +109,7 @@ const addNewTask = async newTask => {
 };
 
 const getTasks = async () => {
-  const response = await fetch(urlTasks);
+  const response = await fetch(`${urlTasks}?_sort=taskNumber&_order=asc&_page=${currentPage}&_limit=10`);
 
   let tasks = await response.json();
 
@@ -113,7 +117,7 @@ const getTasks = async () => {
 };
 
 const getCompletedTasks = async () => {
-  const response = await fetch(`${urlTasks}?status_like=Concluído`);
+  const response = await fetch(`${urlTasks}?_sort=taskNumber&_order=asc&_page=${currentPage}&_limit=10&status_like=Concluído`);
 
   let tasks = await response.json();
 
@@ -121,7 +125,7 @@ const getCompletedTasks = async () => {
 };
 
 const getInProgressTasks = async () => {
-  const response = await fetch(`${urlTasks}?status_like=Em andamento`);
+  const response = await fetch(`${urlTasks}?_sort=taskNumber&_order=asc&_page=${currentPage}&_limit=10&status_like=Em andamento`);
 
   let tasks = await response.json();
 
@@ -129,7 +133,7 @@ const getInProgressTasks = async () => {
 };
 
 const getStoppedTasks = async () => {
-  const response = await fetch(`${urlTasks}?status_like=Parado`);
+  const response = await fetch(`${urlTasks}?_sort=taskNumber&_order=asc&_page=${currentPage}&_limit=10&status_like=Parado`);
 
   let tasks = await response.json();
 
@@ -137,15 +141,15 @@ const getStoppedTasks = async () => {
 };
 
 const getLatedTasks = async () => {
-  const response = await fetch(urlTasks);
+  const response = await fetch(`${urlTasks}?_sort=taskNumber&_order=asc&_page=${currentPage}&_limit=10`);
 
   let tasks = await response.json();
-  
+
   const today = new Date()
   console.log(today.getDate())
-  
+
   latedTasks = tasks.filter((task) => {
-    let deadline = new Date (task.deadline)
+    let deadline = new Date(task.deadline)
     return deadline < today
   })
 
@@ -153,7 +157,7 @@ const getLatedTasks = async () => {
 }
 
 const searchTasks = async (searchedTask) => {
-  const response = await fetch(`${urlTasks}?description_like=${searchedTask}`);
+  const response = await fetch(`${urlTasks}?_sort=taskNumber&_order=asc&_page=${currentPage}&_limit=10&description_like=${searchedTask}`);
 
   let tasks = await response.json();
 
@@ -180,7 +184,7 @@ const updateTask = async (id, updatedTask) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        taskNumber: taskNumber,
+        taskNumber: Number(taskNumber),
         description: description,
         deadline: deadline,
         status: status,
@@ -325,7 +329,7 @@ const addActionToDeleteTaskButton = deleteTaskButton => {
         let completedTasks = await getCompletedTasks();
         idTask = completedTasks[index].id;
         await deleteTask(idTask);
-        
+
         completedTasks = await getCompletedTasks()
         const currentUserInProgressTasks = completedTasks.filter(isCurrentUserTasks);
         renderTasks(currentUserInProgressTasks);
@@ -361,7 +365,7 @@ const addActionToDeleteTaskButton = deleteTaskButton => {
         let tasks = await getLatedTasks();
         idTask = tasks[index].id;
         await deleteTask(idTask);
-        
+
         tasks = await getLatedTasks();
         const currentUserTasks = tasks.filter(isCurrentUserTasks);
         renderTasks(currentUserTasks);
@@ -662,7 +666,7 @@ modalEventButton.addEventListener('click', async () => {
       if (stateTableTask === 'all') {
         const editedTask = insertTaskDetailsInObject();
         await updateTask(idTask, editedTask);
-      
+
         tasks = await getTasks();
         const currentUserTasks = tasks.filter(isCurrentUserTasks);
         renderTasks(currentUserTasks);
@@ -670,7 +674,7 @@ modalEventButton.addEventListener('click', async () => {
       } else if (stateTableTask === 'completed') {
         const editedTask = insertTaskDetailsInObject();
         await updateTask(idTask, editedTask);
-      
+
         completedTasks = await getCompletedTasks()
         const currentUserInProgressTasks = completedTasks.filter(isCurrentUserTasks);
         renderTasks(currentUserInProgressTasks);
@@ -678,7 +682,7 @@ modalEventButton.addEventListener('click', async () => {
       } else if (stateTableTask === 'inprogress') {
         const editedTask = insertTaskDetailsInObject();
         await updateTask(idTask, editedTask);
-      
+
         inProgressTasks = await getInProgressTasks()
         const currentUserInProgressTasks = inProgressTasks.filter(isCurrentUserTasks);
         renderTasks(currentUserInProgressTasks);
@@ -686,7 +690,7 @@ modalEventButton.addEventListener('click', async () => {
       } else if (stateTableTask === 'stopped') {
         const editedTask = insertTaskDetailsInObject();
         await updateTask(idTask, editedTask);
-      
+
         stoppedTasks = await getStoppedTasks()
         const currentUserStoppedTasks = stoppedTasks.filter(isCurrentUserTasks);
         renderTasks(currentUserStoppedTasks);
@@ -694,7 +698,7 @@ modalEventButton.addEventListener('click', async () => {
       } else if (stateTableTask === 'search') {
         const editedTask = insertTaskDetailsInObject();
         await updateTask(idTask, editedTask);
-      
+
         tasks = await searchTasks(findTasksInput.value);
         const currentUserTasks = tasks.filter(isCurrentUserTasks);
         renderTasks(currentUserTasks);
@@ -716,6 +720,7 @@ logoutButton.addEventListener('click', async () => {
 });
 
 getCompletedTasksButton.addEventListener('click', async () => {
+  currentPage = 1
   stateTableTask = 'completed'
   const completedTasks = await getCompletedTasks()
   const currentUserCompletedTasks = completedTasks.filter(isCurrentUserTasks);
@@ -724,6 +729,7 @@ getCompletedTasksButton.addEventListener('click', async () => {
 })
 
 getInProgressTasksButton.addEventListener('click', async () => {
+  currentPage = 1
   stateTableTask = 'inprogress'
   const inProgressTasks = await getInProgressTasks()
   const currentUserInProgressTasks = inProgressTasks.filter(isCurrentUserTasks);
@@ -732,6 +738,7 @@ getInProgressTasksButton.addEventListener('click', async () => {
 })
 
 getStoppedTasksButton.addEventListener('click', async () => {
+  currentPage = 1
   stateTableTask = 'stopped'
   const stoppedTasks = await getStoppedTasks()
   const currentUserStoppedTasks = stoppedTasks.filter(isCurrentUserTasks);
@@ -740,6 +747,7 @@ getStoppedTasksButton.addEventListener('click', async () => {
 })
 
 getAllTasksButton.addEventListener('click', async () => {
+  currentPage = 1
   stateTableTask = 'all'
   const tasks = await getTasks();
   const currentUserTasks = tasks.filter(isCurrentUserTasks);
@@ -748,6 +756,7 @@ getAllTasksButton.addEventListener('click', async () => {
 })
 
 getLatedTasksButton.addEventListener('click', async () => {
+  currentPage = 1
   stateTableTask = 'lated'
   const tasks = await getLatedTasks();
   const currentUserTasks = tasks.filter(isCurrentUserTasks);
@@ -756,9 +765,79 @@ getLatedTasksButton.addEventListener('click', async () => {
 })
 
 findTasksInput.addEventListener('keyup', async () => {
+  currentPage = 1
   stateTableTask = 'search'
   const tasks = await searchTasks(findTasksInput.value);
   const currentUserTasks = tasks.filter(isCurrentUserTasks);
   renderTasks(currentUserTasks);
   renderButtonsWithActions();
 })
+
+const previousPage = async () => {
+  currentPage--
+  if (stateTableTask === 'all') {
+    const tasks = await getTasks();
+    const currentUserTasks = tasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserTasks);
+    renderButtonsWithActions();
+  } else if (stateTableTask === 'inprogress') {
+    const inProgressTasks = await getInProgressTasks()
+    const currentUserInProgressTasks = inProgressTasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserInProgressTasks);
+    renderButtonsWithActions();
+  } else if (stateTableTask === 'stopped') {
+    const stoppedTasks = await getStoppedTasks()
+    const currentUserStoppedTasks = stoppedTasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserStoppedTasks);
+    renderButtonsWithActions();
+  } else if (stateTableTask === 'lated') {
+    const tasks = await getLatedTasks();
+    const currentUserTasks = tasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserTasks);
+    renderButtonsWithActions();
+  } else if (stateTableTask === 'search') {
+    const tasks = await searchTasks(findTasksInput.value);
+    const currentUserTasks = tasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserTasks);
+    renderButtonsWithActions();
+  }
+}
+
+const nextPage = async () => {
+  currentPage++
+  if (stateTableTask === 'all') {
+    const tasks = await getTasks();
+    const currentUserTasks = tasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserTasks);
+    renderButtonsWithActions();
+  } else if (stateTableTask === 'inprogress') {
+    const inProgressTasks = await getInProgressTasks()
+    const currentUserInProgressTasks = inProgressTasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserInProgressTasks);
+    renderButtonsWithActions();
+  } else if (stateTableTask === 'stopped') {
+    const stoppedTasks = await getStoppedTasks()
+    const currentUserStoppedTasks = stoppedTasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserStoppedTasks);
+    renderButtonsWithActions();
+  } else if (stateTableTask === 'lated') {
+    const tasks = await getLatedTasks();
+    const currentUserTasks = tasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserTasks);
+    renderButtonsWithActions();
+  } else if (stateTableTask === 'search') {
+    const tasks = await searchTasks(findTasksInput.value);
+    const currentUserTasks = tasks.filter(isCurrentUserTasks);
+    renderTasks(currentUserTasks);
+    renderButtonsWithActions();
+  }
+}
+
+previousPageButton.addEventListener('click', () => {
+  previousPage()
+})
+
+nextPageButton.addEventListener('click', () => {
+ nextPage()
+})
+

@@ -41,7 +41,9 @@ tbody > tr:nth-child(even) {
 .modalEventButton,
 .loginUserButton,
 .registerUserButton,
-.registerButton, .searchButtons {
+.registerButton, 
+.searchButtons, 
+.pagenationButtons {
   background-color: white;
   color: #68519d;
   border: 1px solid #68519d;
@@ -50,7 +52,9 @@ tbody > tr:nth-child(even) {
 }
 
 .openModalNewTaskButton:hover,
-.registerUserButton:hover, .searchButtons:hover {
+.registerUserButton:hover, 
+.searchButtons:hover,
+.pagenationButtons:hover {
   background-color: #68519d;
   color: white;
 }

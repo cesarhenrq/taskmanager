@@ -73,8 +73,8 @@ tbody > tr:nth-child(even) {
   cursor: pointer;
 }
 
-.openModalEditTaskButton,
-.deleteTaskButton {
+.openModalEditTaskButtons,
+.deleteTaskButtons {
   background: none;
   border: none;
 }

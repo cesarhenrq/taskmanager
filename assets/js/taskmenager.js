@@ -7,10 +7,7 @@ class Task {
   }
 }
 
-let idTask = null;
-
-let userLogedID = null;
-let logedUser = null;
+let idTask, userLogedID, logedUser;
 
 let currentPage = 1;
 
@@ -20,8 +17,9 @@ let task = null;
 
 let stateTableTask = 'all'
 
-const urlTasks = 'http://localhost:3000/tasks'
-const urlTasksWithPagenation = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&_page=${currentPage}&_limit=10`;
+let urlTasks = `http://localhost:3000/tasks`
+let urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`
+let urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
 const urlLogedUser = 'http://localhost:3000/logedUser';
 
 const NUMBER_REQUIRED = 'Por favor insira o número da tarefa';
@@ -107,6 +105,8 @@ const addNewTask = async newTask => {
     });
     setSucessColor();
     showResponseAPI(RESPONSE_ADD_SUCESS);
+    await getTasksByState(urlTasksPagenated)
+    renderTasks(tasks);
   } catch (error) {
     setFailColor();
     showResponseAPI(RESPONSE_ADD_FAIL);
@@ -122,7 +122,7 @@ const getTasks = async (url) => {
 };
 
 const getCompletedTasks = async (url) => {
-  const response = await fetch(`${url}&status_like=Concluído`);
+  const response = await fetch(url + '&status=Concluído');
 
   const gettedCompletedTasks = await response.json();
 
@@ -130,7 +130,7 @@ const getCompletedTasks = async (url) => {
 };
 
 const getInProgressTasks = async (url) => {
-  const response = await fetch(`${url}&status_like=Em andamento`);
+  const response = await fetch(url + '&status=Em andamento');
 
   const gettedInProgressTasks = await response.json();
 
@@ -138,7 +138,7 @@ const getInProgressTasks = async (url) => {
 };
 
 const getStoppedTasks = async (url) => {
-  const response = await fetch(`${url}&status_like=Parado`);
+  const response = await fetch(url + '&status=Parado');
 
   const gettedStoppedTasks = await response.json();
 
@@ -160,8 +160,8 @@ const getLatedTasks = async (url) => {
   return latedTasks;
 }
 
-const searchTasks = async (url,searchedTask) => {
-  const response = await fetch(`${url}&description_like=${searchedTask}`);
+const searchTasks = async (url, searchedTask) => {
+  const response = await fetch(url + `&description_like=${searchedTask}`);
 
   const searchedTasks = await response.json();
 
@@ -173,6 +173,14 @@ const deleteTask = async id => {
     await fetch(`${urlTasks}/${id}`, {
       method: 'DELETE',
     });
+    await getTasksByState(urlTasksPagenated)
+    if (tasks.length === 0) {
+      previousPage()
+      controlPreviousButton()
+      controlNextButton()
+    } else {
+      renderTasks(tasks)
+    }
   } catch (error) {
     console.log(error);
   }
@@ -197,6 +205,8 @@ const updateTask = async (id, updatedTask) => {
     });
     setSucessColor();
     showResponseAPI(RESPONSE_EDIT_SUCESS);
+    await getTasksByState(urlTasksPagenated)
+    renderTasks(tasks);
   } catch (error) {
     setFailColor();
     showResponseAPI(RESPONSE_EDIT_FAIL);
@@ -223,10 +233,10 @@ const renderTasks = tasks => {
       <td>${deadline.getDate() + 1}/${deadline.getMonth() + 1}/${deadline.getFullYear()}</td>
       <td value="${status}">${status}</td>
       <td>
-        <button type="button" class="openModalEditTaskButton">
+        <button type="button" class="openModalEditTaskButtons">
           <img src="./assets/images/edit.svg" alt="Edit Task">
         </button>
-        <button type="button" class="deleteTaskButton">
+        <button type="button" class="deleteTaskButtons">
             <img src="./assets/images/delete.svg" alt="Delete Task">
         </button>
       </td>
@@ -235,17 +245,15 @@ const renderTasks = tasks => {
   });
 
   tableTasksBody.innerHTML = tableTasksContent;
+  const deleteTaskButtons = document.querySelectorAll('.deleteTaskButtons')
+  addDeleteTaskButtonAction(deleteTaskButtons)
+  const openModalEditTaskButtons = document.querySelectorAll('.openModalEditTaskButtons')
+  addOpenModalEditTaskButtonAction(openModalEditTaskButtons)
 };
 
-const renderButtonsWithActions = () => {
-  const deleteTaskButton = document.querySelectorAll('.deleteTaskButton');
-  addActionToDeleteTaskButton(deleteTaskButton);
-
-  const openModalEditTaskButton = document.querySelectorAll(
-    '.openModalEditTaskButton'
-  );
-  addActionToOpenModalEditTaskButton(openModalEditTaskButton);
-};
+const getButtons = (buttonName) => {
+  return document.querySelectorAll(buttonName);
+}
 
 const showResponseAPI = response => {
   responseAPI.innerHTML = `${response}`;
@@ -321,55 +329,20 @@ const validateEachInput = () => {
   });
 };
 
-const addActionToDeleteTaskButton = deleteTaskButton => {
-  deleteTaskButton.forEach((deleteButton, index) => {
-    deleteButton.addEventListener('click', async () => {
-      if (stateTableTask === 'all') {
-        tasks = await getTasks(urlTasksWithPagenation);
-        idTask = tasks[index].id;
-        await deleteTask(idTask);
-        tasks = await getTasks(urlTasksWithPagenation);
-      } else if (stateTableTask === 'completed') {
-        tasks = await getCompletedTasks(urlTasksWithPagenation);
-        idTask = tasks[index].id;
-        await deleteTask(idTask);
-        tasks = await getCompletedTasks(urlTasksWithPagenation);
-      } else if (stateTableTask === 'inprogress') {
-        tasks = await getInProgressTasks(urlTasksWithPagenation);
-        idTask = tasks[index].id;
-        await deleteTask(idTask);
-        tasks = await getInProgressTasks(urlTasksWithPagenation);
-      } else if (stateTableTask === 'stopped') {
-        tasks = await getStoppedTasks(urlTasksWithPagenation);
-        idTask = tasks[index].id;
-        await deleteTask(idTask);
-        tasks = await getStoppedTasks(urlTasksWithPagenation)
-      } else if (stateTableTask === 'search') {
-        tasks = await searchTasks(urlTasksWithPagenation, findTasksInput.value);
-        idTask = tasks[index].id;
-        await deleteTask(idTask);
-        tasks = await searchTasks(urlTasksWithPagenation, findTasksInput.value);
-      } else {
-        tasks = await getLatedTasks(urlTasksWithPagenation);
-        idTask = tasks[index].id;
-        await deleteTask(idTask);
-        tasks = await getLatedTasks(urlTasksWithPagenation);
-      }
-    renderCurrentUserTasksWithActionButtons()
+const addDeleteTaskButtonAction = buttons => {
+  buttons.forEach((button, index) => {
+    button.addEventListener('click', async () => {
+      await getTasksByState(urlTasksPagenated)
+      idTask = tasks[index].id;
+      await deleteTask(idTask);
     });
   });
-};
-
-const renderCurrentUserTasksWithActionButtons = () => {
-  currentUserTasks = tasks.filter(isCurrentUserTasks);
-  renderTasks(currentUserTasks);
-  renderButtonsWithActions();
 }
 
-const addActionToOpenModalEditTaskButton = openModalEditTaskButton => {
-  openModalEditTaskButton.forEach((openModalEdit, index) => {
-    openModalEdit.addEventListener('click', async () => {
-      checkTableStateAndGetTasks()
+const addOpenModalEditTaskButtonAction = buttons => {
+  buttons.forEach((button, index) => {
+    button.addEventListener('click', async () => {
+      await getTasksByState(urlTasksPagenated)
       task = tasks[index];
       idTask = tasks[index].id;
       addTaskDetailsToModalEditTask(task)
@@ -382,29 +355,24 @@ const addActionToOpenModalEditTaskButton = openModalEditTaskButton => {
 };
 
 const openModal = modal => {
-  modal.style.display = 'block';
-  if (modal.id === 'taskEventModal') {
-    validateEachInput();
-  } else if (modal.id === 'loginPage') {
-    validateEachFormLoginInput();
-  } else {
-    validateEachFormRegisterInput();
-  }
+  showModal(modal)
+  validateEachInput();
 };
 
-const closeModal = modal => {
+const hideModal = (modal) => {
   modal.style.display = 'none';
-  if (modal.id === 'loginPage') {
-    restartInputs(formRegisterInputs);
-    removeBorderFormInputs(formRegisterInputs);
-    removeTextSmalls(smalls);
-    disableButton(registerButton);
-  } else if (modal.id === 'taskEventModal') {
-    restartInputs(inputs);
-    removeBorderFormInputs(inputs);
-    removeTextSmalls(smalls);
-    disableButton(modalEventButton);
-  }
+}
+
+const showModal = (modal) => {
+  modal.style.display = 'block';
+}
+
+const closeModal = modal => {
+  hideModal(modal)
+  restartInputs(inputs);
+  removeBorderFormInputs(inputs);
+  removeTextSmalls(smalls);
+  disableButton(modalEventButton);
 };
 
 const enableButton = button => {
@@ -546,14 +514,14 @@ const isFormFieldsValidWithoutShowMessage = () => {
   return validateFormFields;
 };
 
-const isCurrentUserTasks = task => task.userID === userLogedID;
-
 window.addEventListener('load', async () => {
   logedUser = await getLogedUser();
   userLogedID = logedUser[0].userID;
   divUser.innerHTML += `${logedUser[0].name}`;
-  tasks = await getTasks(urlTasksWithPagenation);
-  renderCurrentUserTasksWithActionButtons()
+  urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  tasks = await getTasks(urlTasksPagenated);
+  renderTasks(tasks);
   controlPreviousButton()
   controlNextButton()
 });
@@ -564,10 +532,7 @@ window.addEventListener('click', async event =>
     event.preventDefault();
     closeModal(registerTaskModal)
   }
-  checkTableStateAndGetTasks(urlTasksWithPagenation)
-  renderCurrentUserTasksWithActionButtons()
 });
-
 
 openModalNewTaskButton.addEventListener('click', () => {
   modalEventButton.value = 'newTask';
@@ -587,9 +552,6 @@ modalEventButton.addEventListener('click', async () => {
       const editedTask = insertTaskDetailsInObject();
       await updateTask(idTask, editedTask);
     }
-
-    checkTableStateAndGetTasks(urlTasksWithPagenation)
-    renderCurrentUserTasksWithActionButtons()
     controlPreviousButton()
     controlNextButton()
   }
@@ -603,8 +565,9 @@ logoutButton.addEventListener('click', async () => {
 getCompletedTasksButton.addEventListener('click', async () => {
   currentPage = 1
   stateTableTask = 'completed'
-  tasks = await getCompletedTasks(urlTasksWithPagenation)
-  renderCurrentUserTasksWithActionButtons()
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  tasks = await getCompletedTasks(urlTasksPagenated)
+  renderTasks(tasks);
   controlPreviousButton()
   controlNextButton()
 })
@@ -612,8 +575,9 @@ getCompletedTasksButton.addEventListener('click', async () => {
 getInProgressTasksButton.addEventListener('click', async () => {
   currentPage = 1
   stateTableTask = 'inprogress'
-  tasks = await getInProgressTasks(urlTasksWithPagenation)
-  renderCurrentUserTasksWithActionButtons()
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  tasks = await getInProgressTasks(urlTasksPagenated)
+  renderTasks(tasks);
   controlPreviousButton()
   controlNextButton()
 })
@@ -621,8 +585,9 @@ getInProgressTasksButton.addEventListener('click', async () => {
 getStoppedTasksButton.addEventListener('click', async () => {
   currentPage = 1
   stateTableTask = 'stopped'
-  tasks = await getStoppedTasks(urlTasksWithPagenation);
-  renderCurrentUserTasksWithActionButtons()
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  tasks = await getStoppedTasks(urlTasksPagenated);
+  renderTasks(tasks);
   controlPreviousButton()
   controlNextButton()
 })
@@ -630,8 +595,9 @@ getStoppedTasksButton.addEventListener('click', async () => {
 getAllTasksButton.addEventListener('click', async () => {
   currentPage = 1
   stateTableTask = 'all'
-  tasks = await getTasks(urlTasksWithPagenation);
-  renderCurrentUserTasksWithActionButtons()
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  tasks = await getTasks(urlTasksPagenated);
+  renderTasks(tasks);
   controlPreviousButton()
   controlNextButton()
 })
@@ -639,8 +605,9 @@ getAllTasksButton.addEventListener('click', async () => {
 getLatedTasksButton.addEventListener('click', async () => {
   currentPage = 1
   stateTableTask = 'lated'
-  tasks = await getLatedTasks(urlTasksWithPagenation);
-  renderCurrentUserTasksWithActionButtons()
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  tasks = await getLatedTasks(urlTasksPagenated);
+  renderTasks(tasks);
   controlPreviousButton()
   controlNextButton()
 })
@@ -648,24 +615,25 @@ getLatedTasksButton.addEventListener('click', async () => {
 findTasksInput.addEventListener('keyup', async () => {
   currentPage = 1
   stateTableTask = 'search'
-  tasks = await searchTasks(urlTasksWithPagenation,findTasksInput.value);
-  renderCurrentUserTasksWithActionButtons()
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  tasks = await searchTasks(urlTasksPagenated, findTasksInput.value);
+  renderTasks(tasks);
   controlPreviousButton()
   controlNextButton()
 })
 
 const previousPage = async () => {
   currentPage--
-  checkTableStateAndGetTasks(urlTasksWithPagenation)
-  renderCurrentUserTasksWithActionButtons()
-  console.log(currentUserTasks)
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  await getTasksByState(urlTasksPagenated)
+  renderTasks(tasks);
 }
 
 const nextPage = async () => {
   currentPage++
-  checkTableStateAndGetTasks(urlTasksWithPagenation)
-  renderCurrentUserTasksWithActionButtons()
-  console.log(currentUserTasks)
+  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  await getTasksByState(urlTasksPagenated)
+  renderTasks(tasks);
 }
 
 previousPageButton.addEventListener('click', () => {
@@ -680,37 +648,44 @@ nextPageButton.addEventListener('click', () => {
   controlPreviousButton()
 })
 
-const checkTableStateAndGetTasks = async (url) => {
-    if (stateTableTask === 'all') {
-      tasks = await getTasks(url);
-    } else if (stateTableTask === 'completed') {
-      tasks = await getCompletedTasks(url)
-    } else if (stateTableTask === 'inprogress') {
-      tasks = await getInProgressTasks(url)
-    } else if (stateTableTask === 'stopped') {
-      tasks = await getStoppedTasks(url)
-    } else if (stateTableTask === 'lated') {
-      tasks = await getLatedTasks(url);
-    } else if (stateTableTask === 'search') {
-      tasks = await searchTasks(url, findTasksInput.value);
-    }
+const getTasksByState = async (url) => {
+  if (stateTableTask === 'all') {
+    tasks = await getTasks(url);
+  } else if (stateTableTask === 'completed') {
+    tasks = await getCompletedTasks(url)
+  } else if (stateTableTask === 'inprogress') {
+    tasks = await getInProgressTasks(url)
+  } else if (stateTableTask === 'stopped') {
+    tasks = await getStoppedTasks(url)
+  } else if (stateTableTask === 'lated') {
+    tasks = await getLatedTasks(url);
+  } else if (stateTableTask === 'search') {
+    tasks = await searchTasks(url, findTasksInput.value);
+  }
 }
 
 const controlPreviousButton = () => {
   if (currentPage === 1) {
-    previousPageButton.style.display = 'none'
+    hideButton(previousPageButton)
   } else {
-    previousPageButton.style.display = 'block'
+    showButton(previousPageButton)
   }
 }
 
 const controlNextButton = async () => {
-  await checkTableStateAndGetTasks(urlTasks)
-  currentUserTasks = tasks.filter(isCurrentUserTasks);
-  const isFinalPage = (currentUserTasks.length - currentPage * 10) > 0
+  await getTasksByState(urlTasksLogedUser)
+  const isFinalPage = (tasks.length - (currentPage - 1) * 10) <= 10
   if (isFinalPage) {
-    nextPageButton.style.display = 'none'
+    hideButton(nextPageButton)
   } else {
-    nextPageButton.style.display = 'block'
+    showButton(nextPageButton)
   }
+}
+
+const hideButton = (button) => {
+  button.style.display = 'none'
+}
+
+const showButton = (button) => {
+  button.style.display = 'block'
 }

@@ -92,13 +92,19 @@ const getUsers = async () => {
   return users;
 };
 
-const openModal = modal => {
-  restartInputs(formLoginInputs);
-  removeBorderFormInputs(formLoginInputs);
+const showModal = (modal) => {
   modal.style.display = 'block';
-  if (modal.id === 'taskEventModal') {
-    validateEachInput();
-  } else if (modal.id === 'loginPage') {
+}
+
+const hideModal = (modal) => {
+  modal.style.display = 'none';
+}
+
+const openModal = modal => {
+  showModal(modal)
+  if (modal.id === 'loginPage') {
+    restartInputs(formLoginInputs);
+    removeBorderFormInputs(formLoginInputs);
     validateEachFormLoginInput();
   } else {
     validateEachFormRegisterInput();
@@ -106,18 +112,11 @@ const openModal = modal => {
 };
 
 const closeModal = modal => {
-  modal.style.display = 'none';
-  if (modal.id === 'loginPage') {
-    restartInputs(formRegisterInputs);
-    removeBorderFormInputs(formRegisterInputs);
-    removeTextSmalls(smalls);
-    disableButton(registerButton);
-  } else if (modal.id === 'taskEventModal') {
-    restartInputs(inputs);
-    removeBorderFormInputs(inputs);
-    removeTextSmalls(smalls);
-    disableButton(modalEventButton);
-  }
+  hideModal(modal)
+  restartInputs(formRegisterInputs);
+  removeBorderFormInputs(formRegisterInputs);
+  removeTextSmalls(smalls);
+  disableButton(registerButton);
 };
 
 const enableButton = button => {
@@ -287,7 +286,8 @@ const isLoginFormFieldsValidWithoutShowMessage = () => {
 const validateEachFormRegisterInput = () => {
   inputName.addEventListener('blur', () => {
     hasValue(inputName, NAME_REQUIRED);
-    if (isRegisterFormFieldsValidWithoutShowMessage()) {
+    const isValid = isRegisterFormFieldsValidWithoutShowMessage()
+    if (isValid) {
       enableButton(registerButton);
     } else {
       disableButton(registerButton);
@@ -296,7 +296,7 @@ const validateEachFormRegisterInput = () => {
 
   inputNickname.addEventListener('blur', () => {
     hasValue(inputNickname, NICKNAME_REQUIRED);
-    if (isRegisterFormFieldsValidWithoutShowMessage()) {
+    if (isValid) {
       enableButton(registerButton);
     } else {
       disableButton(registerButton);
@@ -305,7 +305,7 @@ const validateEachFormRegisterInput = () => {
 
   inputPasswordUserRegister.addEventListener('blur', () => {
     hasValue(inputPasswordUserRegister, PASSWORD_REQUIRED);
-    if (isRegisterFormFieldsValidWithoutShowMessage()) {
+    if (isValid) {
       enableButton(registerButton);
     } else {
       disableButton(registerButton);
@@ -318,7 +318,7 @@ const validateEachFormRegisterInput = () => {
       PASSWORDCONFIRMATION_REQUIRED,
       PASSWORDCONFIRMATION_INVALID
     );
-    if (isRegisterFormFieldsValidWithoutShowMessage()) {
+    if (isValid) {
       enableButton(registerButton);
     } else {
       disableButton(registerButton);
@@ -330,7 +330,8 @@ const validateEachFormLoginInput = () => {
   formLoginInputs.forEach(loginInput => {
     loginInput.addEventListener('blur', () => {
       hasValue(loginInput, CREDENTIALS_REQUIRED);
-      if (!isLoginFormFieldsValidWithoutShowMessage()) {
+      const isValid = isLoginFormFieldsValidWithoutShowMessage()
+      if (!isValid) {
         enableButton(loginUserButton);
       } else {
         disableButton(loginUserButton);
@@ -441,7 +442,8 @@ closeRegisterUserModalButton.addEventListener('click', () => {
 
 loginUserButton.addEventListener('click', async () => {
   const users = await getUsers();
-  if (checkUserIsRegistered(users, inputNicknameLogin)) {
+  const isUserRegistered = checkUserIsRegistered(users, inputNicknameLogin)
+  if (isUserRegistered) {
     const isPasswordCorrect = checkPasswordIsCorrect(
       users,
       inputPasswordLogin,
@@ -449,7 +451,6 @@ loginUserButton.addEventListener('click', async () => {
     );
     if (isPasswordCorrect) {
       const logedUser = getLogedUser(users, inputNicknameLogin);
-      console.log(logedUser);
       await addLogedUser(logedUser[0]);
       window.location.href = './taskmenager.html';
     } else {

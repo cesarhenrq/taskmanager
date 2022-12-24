@@ -7,14 +7,10 @@ class Task {
   }
 }
 
-let idTask, userLogedID, logedUser;
+let idTask, userLogedID, logedUser, tasks, currentUserTasks, task;
+
 
 let currentPage = 1;
-
-let tasks = [];
-let currentUserTasks = [];
-let task = null;
-
 let stateTableTask = 'all'
 
 let urlTasks = `http://localhost:3000/tasks`
@@ -250,10 +246,6 @@ const renderTasks = tasks => {
   const openModalEditTaskButtons = document.querySelectorAll('.openModalEditTaskButtons')
   addOpenModalEditTaskButtonAction(openModalEditTaskButtons)
 };
-
-const getButtons = (buttonName) => {
-  return document.querySelectorAll(buttonName);
-}
 
 const showResponseAPI = response => {
   responseAPI.innerHTML = `${response}`;

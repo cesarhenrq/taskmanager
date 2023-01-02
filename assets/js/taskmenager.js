@@ -348,8 +348,13 @@ const addOpenModalEditTaskButtonAction = buttons => {
 
 const openModal = modal => {
   showModal(modal)
+  toggleAnimation(modal)
   validateEachInput();
 };
+
+const toggleAnimation = (element) => {
+  element.classList.toggle('animation')
+}
 
 const hideModal = (modal) => {
   modal.style.display = 'none';
@@ -361,6 +366,7 @@ const showModal = (modal) => {
 
 const closeModal = modal => {
   hideModal(modal)
+  toggleAnimation(modal)
   restartInputs(inputs);
   removeBorderFormInputs(inputs);
   removeTextSmalls(smalls);

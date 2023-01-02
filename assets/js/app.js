@@ -46,6 +46,7 @@ const inputNicknameLogin = document.querySelector('#inputNicknameLogin');
 const inputPasswordLogin = document.querySelector('#inputPasswordLogin');
 
 const smalls = document.querySelectorAll('small');
+const sections = document.querySelectorAll('section')
 
 // const darkModeToggle = document.querySelector('#darkmode-toggle');
 
@@ -102,6 +103,7 @@ const hideModal = (modal) => {
 
 const openModal = modal => {
   showModal(modal)
+  toggleAnimation(modal)
   if (modal.id === 'loginPage') {
     restartInputs(formLoginInputs);
     removeBorderFormInputs(formLoginInputs);
@@ -111,8 +113,13 @@ const openModal = modal => {
   }
 };
 
+const toggleAnimation = (element) => {
+  element.classList.toggle('animation')
+}
+
 const closeModal = modal => {
   hideModal(modal)
+  toggleAnimation(modal)
   restartInputs(formRegisterInputs);
   removeBorderFormInputs(formRegisterInputs);
   removeTextSmalls(smalls);
@@ -200,7 +207,7 @@ const showMessage = (input, message, type) => {
   } else {
     input.classList.remove('success');
     input.classList.add('error');
-    disableButton;
+    disableButton(registerButton);
   }
 
   return type;
@@ -370,7 +377,9 @@ const validadePasswordConfirmationWithoutShowMessage = input => {
   return false;
 };
 
-loginPage.addEventListener('load', validateEachFormLoginInput());
+loginPage.addEventListener('load', () => {
+  validateEachFormLoginInput()
+});
 
 /*darkModeToggle.addEventListener('click', () => {
   if (!darkModeToggle.checked) {

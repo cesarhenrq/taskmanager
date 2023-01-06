@@ -191,8 +191,15 @@ td[value='Parado'] {
   color: #eb5757;
 }
 
-#inputDate::placeholder {
+#inputDate::placeholder,
+#findTasksInput::placeholder {
   color: #68519d;
+}
+
+#findTasksInput {
+  border: 1px solid #000000;
+  border-radius: 1rem;
+  padding-left: 1rem;
 }
 
 .enabledButton {

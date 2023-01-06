@@ -12,6 +12,13 @@ let idTask, userLogedID, logedUser, tasks, currentUserTasks, task;
 let currentPage = 1;
 let stateTableTask = 'all';
 
+const spinner = `
+  <div class="spinner-border" role="status">
+    <span class="visually-hidden">
+      Loading...
+    </span>
+  </div>`;
+
 let urlTasks = `http://localhost:3000/tasks`;
 let urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`;
 let urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
@@ -210,6 +217,28 @@ const updateTask = async (id, updatedTask) => {
     setFailColor();
     showResponseAPI(RESPONSE_EDIT_FAIL);
   }
+};
+
+const loadingTasks = () => {
+  tableTasksBody.innerHTML = `
+  <tr>
+      <td>
+        ${spinner}
+      </td>
+      <td>
+        ${spinner}
+      </td>
+      <td>
+        ${spinner}
+      </td>
+      <td>
+        ${spinner}
+      </td>
+      <td>
+        ${spinner}
+      </td>
+  </tr>
+`;
 };
 
 const renderTasks = tasks => {
@@ -532,6 +561,7 @@ window.addEventListener('load', async () => {
   divUser.innerHTML += `${logedUser[0].name}`;
   urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`;
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  loadingTasks();
   tasks = await getTasks(urlTasksPagenated);
   renderTasks(tasks);
   controlPreviousButton();
@@ -577,6 +607,7 @@ getCompletedTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'completed';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  loadingTasks();
   tasks = await getCompletedTasks(urlTasksPagenated);
   renderTasks(tasks);
   controlPreviousButton();
@@ -587,6 +618,7 @@ getInProgressTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'inprogress';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  loadingTasks();
   tasks = await getInProgressTasks(urlTasksPagenated);
   renderTasks(tasks);
   controlPreviousButton();
@@ -597,6 +629,7 @@ getStoppedTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'stopped';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  loadingTasks();
   tasks = await getStoppedTasks(urlTasksPagenated);
   renderTasks(tasks);
   controlPreviousButton();
@@ -607,6 +640,7 @@ getAllTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'all';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  loadingTasks();
   tasks = await getTasks(urlTasksPagenated);
   renderTasks(tasks);
   controlPreviousButton();
@@ -617,6 +651,7 @@ getLatedTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'lated';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  loadingTasks();
   tasks = await getLatedTasks(urlTasksPagenated);
   renderTasks(tasks);
   controlPreviousButton();
@@ -627,6 +662,7 @@ findTasksInput.addEventListener('keyup', async () => {
   currentPage = 1;
   stateTableTask = 'search';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  loadingTasks();
   tasks = await searchTasks(urlTasksPagenated, findTasksInput.value);
   renderTasks(tasks);
   controlPreviousButton();

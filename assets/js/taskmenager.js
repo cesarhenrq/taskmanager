@@ -9,12 +9,11 @@ class Task {
 
 let idTask, userLogedID, logedUser, tasks, currentUserTasks, task;
 
-
 let currentPage = 1;
-let stateTableTask = 'all'
+let stateTableTask = 'all';
 
-let urlTasks = `http://localhost:3000/tasks`
-let urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`
+let urlTasks = `http://localhost:3000/tasks`;
+let urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`;
 let urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
 const urlLogedUser = 'http://localhost:3000/logedUser';
 
@@ -44,18 +43,22 @@ const inputNumber = document.querySelector('#inputNumber');
 const inputDescription = document.querySelector('#inputDescription');
 const inputDate = document.querySelector('#inputDate');
 const inputTaskStatus = document.querySelector('#taskStatusInput');
-const findTasksInput = document.querySelector('#findTasksInput')
+const findTasksInput = document.querySelector('#findTasksInput');
 
 const openModalNewTaskButton = document.querySelector(
   '.openModalNewTaskButton'
 );
-const getAllTasksButton = document.querySelector('#getAllTasksButton')
-const getCompletedTasksButton = document.querySelector('#getCompletedTasksButton')
-const getInProgressTasksButton = document.querySelector('#getInProgressTasksButton')
-const getStoppedTasksButton = document.querySelector('#getStoppedTasksButton')
-const getLatedTasksButton = document.querySelector('#getLatedTasksButton')
-const nextPageButton = document.querySelector('.nextPageButton')
-const previousPageButton = document.querySelector('.previousPageButton')
+const getAllTasksButton = document.querySelector('#getAllTasksButton');
+const getCompletedTasksButton = document.querySelector(
+  '#getCompletedTasksButton'
+);
+const getInProgressTasksButton = document.querySelector(
+  '#getInProgressTasksButton'
+);
+const getStoppedTasksButton = document.querySelector('#getStoppedTasksButton');
+const getLatedTasksButton = document.querySelector('#getLatedTasksButton');
+const nextPageButton = document.querySelector('.nextPageButton');
+const previousPageButton = document.querySelector('.previousPageButton');
 
 const tableTasksBody = document.querySelector('.tableTasksBody');
 const table = document.querySelector('table');
@@ -101,7 +104,7 @@ const addNewTask = async newTask => {
     });
     setSucessColor();
     showResponseAPI(RESPONSE_ADD_SUCESS);
-    await getTasksByState(urlTasksPagenated)
+    await getTasksByState(urlTasksPagenated);
     renderTasks(tasks);
   } catch (error) {
     setFailColor();
@@ -109,7 +112,7 @@ const addNewTask = async newTask => {
   }
 };
 
-const getTasks = async (url) => {
+const getTasks = async url => {
   const response = await fetch(url);
 
   const gettedTasks = await response.json();
@@ -117,7 +120,7 @@ const getTasks = async (url) => {
   return gettedTasks;
 };
 
-const getCompletedTasks = async (url) => {
+const getCompletedTasks = async url => {
   const response = await fetch(url + '&status=Concluído');
 
   const gettedCompletedTasks = await response.json();
@@ -125,7 +128,7 @@ const getCompletedTasks = async (url) => {
   return gettedCompletedTasks;
 };
 
-const getInProgressTasks = async (url) => {
+const getInProgressTasks = async url => {
   const response = await fetch(url + '&status=Em andamento');
 
   const gettedInProgressTasks = await response.json();
@@ -133,7 +136,7 @@ const getInProgressTasks = async (url) => {
   return gettedInProgressTasks;
 };
 
-const getStoppedTasks = async (url) => {
+const getStoppedTasks = async url => {
   const response = await fetch(url + '&status=Parado');
 
   const gettedStoppedTasks = await response.json();
@@ -141,20 +144,20 @@ const getStoppedTasks = async (url) => {
   return gettedStoppedTasks;
 };
 
-const getLatedTasks = async (url) => {
+const getLatedTasks = async url => {
   const response = await fetch(url);
 
   const gettedLatedTasks = await response.json();
 
-  const today = new Date()
+  const today = new Date();
 
-  latedTasks = gettedLatedTasks.filter((task) => {
-    let deadline = new Date(task.deadline)
-    return deadline < today
-  })
+  latedTasks = gettedLatedTasks.filter(task => {
+    let deadline = new Date(task.deadline);
+    return deadline < today;
+  });
 
   return latedTasks;
-}
+};
 
 const searchTasks = async (url, searchedTask) => {
   const response = await fetch(url + `&description_like=${searchedTask}`);
@@ -169,13 +172,13 @@ const deleteTask = async id => {
     await fetch(`${urlTasks}/${id}`, {
       method: 'DELETE',
     });
-    await getTasksByState(urlTasksPagenated)
+    await getTasksByState(urlTasksPagenated);
     if (tasks.length === 0) {
-      previousPage()
-      controlPreviousButton()
-      controlNextButton()
+      previousPage();
+      controlPreviousButton();
+      controlNextButton();
     } else {
-      renderTasks(tasks)
+      renderTasks(tasks);
     }
   } catch (error) {
     console.log(error);
@@ -201,7 +204,7 @@ const updateTask = async (id, updatedTask) => {
     });
     setSucessColor();
     showResponseAPI(RESPONSE_EDIT_SUCESS);
-    await getTasksByState(urlTasksPagenated)
+    await getTasksByState(urlTasksPagenated);
     renderTasks(tasks);
   } catch (error) {
     setFailColor();
@@ -220,13 +223,13 @@ const renderTasks = tasks => {
       status: status,
     } = task;
 
-    deadline = new Date(deadline)
+    deadline = formatDate(deadline);
 
     tableTasksContent += `
     <tr>
       <td>${taskNumber}</td>
       <td>${description}</td>
-      <td>${deadline.getDate() + 1}/${deadline.getMonth() + 1}/${deadline.getFullYear()}</td>
+      <td>${deadline}</td>
       <td value="${status}">${status}</td>
       <td>
         <button type="button" class="openModalEditTaskButtons">
@@ -241,10 +244,24 @@ const renderTasks = tasks => {
   });
 
   tableTasksBody.innerHTML = tableTasksContent;
-  const deleteTaskButtons = document.querySelectorAll('.deleteTaskButtons')
-  addDeleteTaskButtonAction(deleteTaskButtons)
-  const openModalEditTaskButtons = document.querySelectorAll('.openModalEditTaskButtons')
-  addOpenModalEditTaskButtonAction(openModalEditTaskButtons)
+  const deleteTaskButtons = document.querySelectorAll('.deleteTaskButtons');
+  addDeleteTaskButtonAction(deleteTaskButtons);
+  const openModalEditTaskButtons = document.querySelectorAll(
+    '.openModalEditTaskButtons'
+  );
+  addOpenModalEditTaskButtonAction(openModalEditTaskButtons);
+};
+
+const formatDate = date => {
+  date = new Date(date);
+
+  const day = date.getDate() + 1;
+  const month = date.getMonth() + 1;
+  const year = date.getFullYear();
+
+  const fullDate = `${day}/${month}/${year}`;
+
+  return fullDate;
 };
 
 const showResponseAPI = response => {
@@ -324,20 +341,20 @@ const validateEachInput = () => {
 const addDeleteTaskButtonAction = buttons => {
   buttons.forEach((button, index) => {
     button.addEventListener('click', async () => {
-      await getTasksByState(urlTasksPagenated)
+      await getTasksByState(urlTasksPagenated);
       idTask = tasks[index].id;
       await deleteTask(idTask);
     });
   });
-}
+};
 
 const addOpenModalEditTaskButtonAction = buttons => {
   buttons.forEach((button, index) => {
     button.addEventListener('click', async () => {
-      await getTasksByState(urlTasksPagenated)
+      await getTasksByState(urlTasksPagenated);
       task = tasks[index];
       idTask = tasks[index].id;
-      addTaskDetailsToModalEditTask(task)
+      addTaskDetailsToModalEditTask(task);
       modalEventButton.value = 'editTask';
       modalTitle.innerHTML = 'Editar tarefa';
       openModal(editTaskModal);
@@ -347,26 +364,26 @@ const addOpenModalEditTaskButtonAction = buttons => {
 };
 
 const openModal = modal => {
-  showModal(modal)
-  toggleAnimation(modal)
+  showModal(modal);
+  toggleAnimation(modal);
   validateEachInput();
 };
 
-const toggleAnimation = (element) => {
-  element.classList.toggle('animation')
-}
+const toggleAnimation = element => {
+  element.classList.toggle('animation');
+};
 
-const hideModal = (modal) => {
+const hideModal = modal => {
   modal.style.display = 'none';
-}
+};
 
-const showModal = (modal) => {
+const showModal = modal => {
   modal.style.display = 'block';
-}
+};
 
 const closeModal = modal => {
-  hideModal(modal)
-  toggleAnimation(modal)
+  hideModal(modal);
+  toggleAnimation(modal);
   restartInputs(inputs);
   removeBorderFormInputs(inputs);
   removeTextSmalls(smalls);
@@ -488,10 +505,7 @@ const isFormFieldsValid = () => {
     NUMBER_INVALID
   );
   const descriptionValid = hasValue(inputDescription, DESCRIPTION_REQUIRED);
-  const taskDeadlineValid = hasValue(
-    inputDate,
-    DEADLINE_REQUIRED
-  );
+  const taskDeadlineValid = hasValue(inputDate, DEADLINE_REQUIRED);
   const taskStatusValid = hasValue(inputTaskStatus, STATUS_REQUIRED);
 
   const validateFormFields =
@@ -516,19 +530,18 @@ window.addEventListener('load', async () => {
   logedUser = await getLogedUser();
   userLogedID = logedUser[0].userID;
   divUser.innerHTML += `${logedUser[0].name}`;
-  urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`
+  urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`;
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   tasks = await getTasks(urlTasksPagenated);
   renderTasks(tasks);
-  controlPreviousButton()
-  controlNextButton()
+  controlPreviousButton();
+  controlNextButton();
 });
 
-window.addEventListener('click', async event =>
-{
+window.addEventListener('click', async event => {
   if (event.target === registerTaskModal || event.target === closeModalButton) {
     event.preventDefault();
-    closeModal(registerTaskModal)
+    closeModal(registerTaskModal);
   }
 });
 
@@ -550,8 +563,8 @@ modalEventButton.addEventListener('click', async () => {
       const editedTask = insertTaskDetailsInObject();
       await updateTask(idTask, editedTask);
     }
-    controlPreviousButton()
-    controlNextButton()
+    controlPreviousButton();
+    controlNextButton();
   }
 });
 
@@ -561,129 +574,129 @@ logoutButton.addEventListener('click', async () => {
 });
 
 getCompletedTasksButton.addEventListener('click', async () => {
-  currentPage = 1
-  stateTableTask = 'completed'
+  currentPage = 1;
+  stateTableTask = 'completed';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
-  tasks = await getCompletedTasks(urlTasksPagenated)
+  tasks = await getCompletedTasks(urlTasksPagenated);
   renderTasks(tasks);
-  controlPreviousButton()
-  controlNextButton()
-})
+  controlPreviousButton();
+  controlNextButton();
+});
 
 getInProgressTasksButton.addEventListener('click', async () => {
-  currentPage = 1
-  stateTableTask = 'inprogress'
+  currentPage = 1;
+  stateTableTask = 'inprogress';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
-  tasks = await getInProgressTasks(urlTasksPagenated)
+  tasks = await getInProgressTasks(urlTasksPagenated);
   renderTasks(tasks);
-  controlPreviousButton()
-  controlNextButton()
-})
+  controlPreviousButton();
+  controlNextButton();
+});
 
 getStoppedTasksButton.addEventListener('click', async () => {
-  currentPage = 1
-  stateTableTask = 'stopped'
+  currentPage = 1;
+  stateTableTask = 'stopped';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   tasks = await getStoppedTasks(urlTasksPagenated);
   renderTasks(tasks);
-  controlPreviousButton()
-  controlNextButton()
-})
+  controlPreviousButton();
+  controlNextButton();
+});
 
 getAllTasksButton.addEventListener('click', async () => {
-  currentPage = 1
-  stateTableTask = 'all'
+  currentPage = 1;
+  stateTableTask = 'all';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   tasks = await getTasks(urlTasksPagenated);
   renderTasks(tasks);
-  controlPreviousButton()
-  controlNextButton()
-})
+  controlPreviousButton();
+  controlNextButton();
+});
 
 getLatedTasksButton.addEventListener('click', async () => {
-  currentPage = 1
-  stateTableTask = 'lated'
+  currentPage = 1;
+  stateTableTask = 'lated';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   tasks = await getLatedTasks(urlTasksPagenated);
   renderTasks(tasks);
-  controlPreviousButton()
-  controlNextButton()
-})
+  controlPreviousButton();
+  controlNextButton();
+});
 
 findTasksInput.addEventListener('keyup', async () => {
-  currentPage = 1
-  stateTableTask = 'search'
+  currentPage = 1;
+  stateTableTask = 'search';
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   tasks = await searchTasks(urlTasksPagenated, findTasksInput.value);
   renderTasks(tasks);
-  controlPreviousButton()
-  controlNextButton()
-})
+  controlPreviousButton();
+  controlNextButton();
+});
 
 const previousPage = async () => {
-  currentPage--
+  currentPage--;
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
-  await getTasksByState(urlTasksPagenated)
+  await getTasksByState(urlTasksPagenated);
   renderTasks(tasks);
-}
+};
 
 const nextPage = async () => {
-  currentPage++
+  currentPage++;
   urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
-  await getTasksByState(urlTasksPagenated)
+  await getTasksByState(urlTasksPagenated);
   renderTasks(tasks);
-}
+};
 
 previousPageButton.addEventListener('click', () => {
-  previousPage()
-  controlPreviousButton()
-  controlNextButton()
-})
+  previousPage();
+  controlPreviousButton();
+  controlNextButton();
+});
 
 nextPageButton.addEventListener('click', () => {
-  nextPage()
-  controlNextButton()
-  controlPreviousButton()
-})
+  nextPage();
+  controlNextButton();
+  controlPreviousButton();
+});
 
-const getTasksByState = async (url) => {
+const getTasksByState = async url => {
   if (stateTableTask === 'all') {
     tasks = await getTasks(url);
   } else if (stateTableTask === 'completed') {
-    tasks = await getCompletedTasks(url)
+    tasks = await getCompletedTasks(url);
   } else if (stateTableTask === 'inprogress') {
-    tasks = await getInProgressTasks(url)
+    tasks = await getInProgressTasks(url);
   } else if (stateTableTask === 'stopped') {
-    tasks = await getStoppedTasks(url)
+    tasks = await getStoppedTasks(url);
   } else if (stateTableTask === 'lated') {
     tasks = await getLatedTasks(url);
   } else if (stateTableTask === 'search') {
     tasks = await searchTasks(url, findTasksInput.value);
   }
-}
+};
 
 const controlPreviousButton = () => {
   if (currentPage === 1) {
-    hideButton(previousPageButton)
+    hideButton(previousPageButton);
   } else {
-    showButton(previousPageButton)
+    showButton(previousPageButton);
   }
-}
+};
 
 const controlNextButton = async () => {
-  await getTasksByState(urlTasksLogedUser)
-  const isFinalPage = (tasks.length - (currentPage - 1) * 10) <= 10
+  await getTasksByState(urlTasksLogedUser);
+  const isFinalPage = tasks.length - (currentPage - 1) * 10 <= 10;
   if (isFinalPage) {
-    hideButton(nextPageButton)
+    hideButton(nextPageButton);
   } else {
-    showButton(nextPageButton)
+    showButton(nextPageButton);
   }
-}
+};
 
-const hideButton = (button) => {
-  button.style.display = 'none'
-}
+const hideButton = button => {
+  button.style.display = 'none';
+};
 
-const showButton = (button) => {
-  button.style.display = 'block'
-}
+const showButton = button => {
+  button.style.display = 'block';
+};

@@ -5,14 +5,6 @@
       "description": "Teste",
       "deadline": "00/00/0000",
       "status": "Concluído",
-      "userID": 1,
-      "id": 1
-    },
-    {
-      "taskNumber": "1",
-      "description": "Teste",
-      "deadline": "00/00/0000",
-      "status": "Concluído",
       "userID": 3,
       "id": 2
     },
@@ -33,22 +25,6 @@
       "id": 4
     },
     {
-      "taskNumber": "2",
-      "description": "Teste",
-      "deadline": "00/00/0000",
-      "status": "Em andamento",
-      "userID": 1,
-      "id": 5
-    },
-    {
-      "taskNumber": "3",
-      "description": "Teste",
-      "deadline": "00/00/0000",
-      "status": "Parado",
-      "userID": 1,
-      "id": 6
-    },
-    {
       "taskNumber": "4",
       "description": "Teste 4",
       "deadline": "00/00/0000",
@@ -57,12 +33,28 @@
       "id": 7
     },
     {
-      "taskNumber": "4",
+      "taskNumber": 1,
       "description": "Teste",
-      "deadline": "00/00/0000",
+      "deadline": "2023-01-07",
       "status": "Concluído",
       "userID": 1,
       "id": 8
+    },
+    {
+      "taskNumber": 2,
+      "description": "Teste",
+      "deadline": "2023-01-06",
+      "status": "Concluído",
+      "userID": 1,
+      "id": 9
+    },
+    {
+      "taskNumber": 3,
+      "description": "Teste",
+      "deadline": "2023-01-07",
+      "status": "Concluído",
+      "userID": 1,
+      "id": 10
     }
   ],
   "users": [

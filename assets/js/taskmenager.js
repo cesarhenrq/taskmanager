@@ -329,42 +329,30 @@ const addTaskDetailsToModalEditTask = task => {
   });
 };
 
+const validateInput = (input, msg_required) => {
+  input.addEventListener('blur', () => {
+    hasValue(input, msg_required);
+    toggleButton();
+  });
+};
+
+const toggleButton = () => {
+  if (isFormFieldsValidWithoutShowMessage()) {
+    enableButton(modalEventButton);
+  } else {
+    disableButton(modalEventButton);
+  }
+};
+
 const validateEachInput = () => {
   inputNumber.addEventListener('blur', () => {
     validateTaskNumber(inputNumber, NUMBER_REQUIRED, NUMBER_INVALID);
-    if (isFormFieldsValidWithoutShowMessage()) {
-      enableButton(modalEventButton);
-    } else {
-      disableButton(modalEventButton);
-    }
+    toggleButton();
   });
 
-  inputDescription.addEventListener('blur', () => {
-    hasValue(inputDescription, DESCRIPTION_REQUIRED);
-    if (isFormFieldsValidWithoutShowMessage()) {
-      enableButton(modalEventButton);
-    } else {
-      disableButton(modalEventButton);
-    }
-  });
-
-  inputDate.addEventListener('blur', () => {
-    hasValue(inputDate, DEADLINE_REQUIRED);
-    if (isFormFieldsValidWithoutShowMessage()) {
-      enableButton(modalEventButton);
-    } else {
-      disableButton(modalEventButton);
-    }
-  });
-
-  inputTaskStatus.addEventListener('blur', () => {
-    hasValue(inputTaskStatus, STATUS_REQUIRED);
-    if (isFormFieldsValidWithoutShowMessage()) {
-      enableButton(modalEventButton);
-    } else {
-      disableButton(modalEventButton);
-    }
-  });
+  validateInput(inputDescription, DESCRIPTION_REQUIRED);
+  validateInput(inputDate, DEADLINE_REQUIRED);
+  validateInput(inputTaskStatus, STATUS_REQUIRED);
 };
 
 const addDeleteTaskButtonAction = buttons => {

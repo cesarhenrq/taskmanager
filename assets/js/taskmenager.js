@@ -544,6 +544,7 @@ const isFormFieldsValidWithoutShowMessage = () => {
 };
 
 window.addEventListener('load', async () => {
+  if (await isLoged()) {
   logedUser = await getLogedUser();
   userLogedID = logedUser[0].userID;
   divUser.innerHTML += `${logedUser[0].name}`;
@@ -554,6 +555,10 @@ window.addEventListener('load', async () => {
   renderTasks(tasks);
   controlPreviousButton();
   controlNextButton();
+  } else {
+    window.location.href = './index.html';
+    console.log('ninguém logado')
+  }
 });
 
 window.addEventListener('click', async event => {
@@ -723,4 +728,14 @@ const hideButton = button => {
 
 const showButton = button => {
   button.style.display = 'block';
+};
+
+const isLoged = async () => {
+  const users = await getLogedUser();
+  
+  if (users.length !== 0) {
+    return true;
+  };
+  
+  return false;
 };

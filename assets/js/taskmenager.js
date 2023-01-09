@@ -556,8 +556,8 @@ window.addEventListener('load', async () => {
   controlPreviousButton();
   controlNextButton();
   } else {
+    window.alert('Você deve estar logado para continuar nesta página.')
     window.location.href = './index.html';
-    console.log('ninguém logado')
   }
 });
 

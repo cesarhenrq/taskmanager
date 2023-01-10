@@ -194,7 +194,7 @@ const getLogedUser = (users, input) => {
   const currentUser = users.filter(user => {
     return user.nickname === nickname;
   });
-  return currentUser;
+  return currentUser[0];
 };
 
 const showMessage = (input, message, type) => {
@@ -460,8 +460,8 @@ loginUserButton.addEventListener('click', async () => {
     );
     if (isPasswordCorrect) {
       const logedUser = getLogedUser(users, inputNicknameLogin);
-      localStorage.setItem('userID', logedUser[0].id);
-      await addLogedUser(logedUser[0]);
+      localStorage.setItem('userID', logedUser.id);
+      await addLogedUser(logedUser);
       window.location.href = './taskmenager.html';
     } else {
       loginMessage.textContent = 'Senha incorreta!';

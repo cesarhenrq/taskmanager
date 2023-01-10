@@ -79,7 +79,7 @@ const smalls = document.querySelectorAll('small');
 const divUser = document.querySelector('#divUser');
 
 const getLogedUser = async () => {
-  const response = await fetch(`${urlLogedUser}/${userLogedID}`);
+  const response = await fetch(`${urlLogedUser}&id=${userLogedID}`);
 
   let logedUser = await response.json();
 
@@ -87,7 +87,7 @@ const getLogedUser = async () => {
 };
 
 const deleteLogedUser = async id => {
-  await fetch(`${urlLogedUser}/${id}`, {
+  await fetch(`${urlLogedUser}&id=${id}`, {
     method: 'DELETE',
   });
 };
@@ -547,6 +547,7 @@ const isFormFieldsValidWithoutShowMessage = () => {
 window.addEventListener('load', async () => {
   if (await isLoged()) {
     logedUser = await getLogedUser();
+    console.log(logedUser);
     divUser.innerHTML += `${logedUser.name}`;
     urlTasksLogedUser = `https://json-server.herokuapp.com/tasks?userID=${userLogedID}`;
     urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;

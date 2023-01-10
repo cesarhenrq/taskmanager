@@ -79,7 +79,7 @@ const smalls = document.querySelectorAll('small');
 const divUser = document.querySelector('#divUser');
 
 const getLogedUser = async () => {
-  const response = await fetch(`${urlLogedUser}&id=${userLogedID}`);
+  const response = await fetch(`${urlLogedUser}?id=${userLogedID}`);
 
   let logedUser = await response.json();
 
@@ -87,7 +87,7 @@ const getLogedUser = async () => {
 };
 
 const deleteLogedUser = async id => {
-  await fetch(`${urlLogedUser}&id=${id}`, {
+  await fetch(`${urlLogedUser}?id=${id}`, {
     method: 'DELETE',
   });
 };

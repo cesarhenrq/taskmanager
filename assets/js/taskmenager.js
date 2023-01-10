@@ -82,6 +82,8 @@ const getLogedUser = async () => {
   const response = await fetch(`${urlLogedUser}?userID=${userLogedID}`);
 
   let logedUser = await response.json();
+  
+  console.log(logedUser)
 
   return logedUser;
 };

@@ -738,9 +738,9 @@ const showButton = button => {
 };
 
 const isLoged = async () => {
-  const users = await getLogedUser();
+  const hasUser  = localStorage.getItem('userId');
 
-  if (users.length !== 0) {
+  if ((hasUser !== undefined) || (hasUser !== null)) {
     return true;
   }
 

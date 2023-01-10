@@ -19,10 +19,10 @@ const spinner = `
     </span>
   </div>`;
 
-let urlTasks = `http://localhost:3000/tasks`;
-let urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`;
-let urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
-const urlLogedUser = 'http://localhost:3000/logedUser';
+let urlTasks = `https://json-server.herokuapp.com/tasks`;
+let urlTasksLogedUser = `https://json-server.herokuapp.com/tasks?userID=${userLogedID}`;
+let urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+const urlLogedUser = 'https://json-server.herokuapp.com/logedUser';
 
 const NUMBER_REQUIRED = 'Por favor insira o número da tarefa';
 const NUMBER_INVALID = 'Por favor insira somente números';
@@ -545,18 +545,18 @@ const isFormFieldsValidWithoutShowMessage = () => {
 
 window.addEventListener('load', async () => {
   if (await isLoged()) {
-  logedUser = await getLogedUser();
-  userLogedID = logedUser[0].userID;
-  divUser.innerHTML += `${logedUser[0].name}`;
-  urlTasksLogedUser = `http://localhost:3000/tasks?userID=${userLogedID}`;
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
-  loadingTasks();
-  tasks = await getTasks(urlTasksPagenated);
-  renderTasks(tasks);
-  controlPreviousButton();
-  controlNextButton();
+    logedUser = await getLogedUser();
+    userLogedID = logedUser[0].userID;
+    divUser.innerHTML += `${logedUser[0].name}`;
+    urlTasksLogedUser = `https://json-server.herokuapp.com/tasks?userID=${userLogedID}`;
+    urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+    loadingTasks();
+    tasks = await getTasks(urlTasksPagenated);
+    renderTasks(tasks);
+    controlPreviousButton();
+    controlNextButton();
   } else {
-    window.alert('Você deve estar logado para continuar nesta página.')
+    window.alert('Você deve estar logado para continuar nesta página.');
     window.location.href = './index.html';
   }
 });
@@ -599,7 +599,7 @@ logoutButton.addEventListener('click', async () => {
 getCompletedTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'completed';
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   loadingTasks();
   tasks = await getCompletedTasks(urlTasksPagenated);
   renderTasks(tasks);
@@ -610,7 +610,7 @@ getCompletedTasksButton.addEventListener('click', async () => {
 getInProgressTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'inprogress';
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   loadingTasks();
   tasks = await getInProgressTasks(urlTasksPagenated);
   renderTasks(tasks);
@@ -621,7 +621,7 @@ getInProgressTasksButton.addEventListener('click', async () => {
 getStoppedTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'stopped';
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   loadingTasks();
   tasks = await getStoppedTasks(urlTasksPagenated);
   renderTasks(tasks);
@@ -632,7 +632,7 @@ getStoppedTasksButton.addEventListener('click', async () => {
 getAllTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'all';
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   loadingTasks();
   tasks = await getTasks(urlTasksPagenated);
   renderTasks(tasks);
@@ -643,7 +643,7 @@ getAllTasksButton.addEventListener('click', async () => {
 getLatedTasksButton.addEventListener('click', async () => {
   currentPage = 1;
   stateTableTask = 'lated';
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   loadingTasks();
   tasks = await getLatedTasks(urlTasksPagenated);
   renderTasks(tasks);
@@ -654,7 +654,7 @@ getLatedTasksButton.addEventListener('click', async () => {
 findTasksInput.addEventListener('keyup', async () => {
   currentPage = 1;
   stateTableTask = 'search';
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   loadingTasks();
   tasks = await searchTasks(urlTasksPagenated, findTasksInput.value);
   renderTasks(tasks);
@@ -664,14 +664,14 @@ findTasksInput.addEventListener('keyup', async () => {
 
 const previousPage = async () => {
   currentPage--;
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   await getTasksByState(urlTasksPagenated);
   renderTasks(tasks);
 };
 
 const nextPage = async () => {
   currentPage++;
-  urlTasksPagenated = `http://localhost:3000/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
   await getTasksByState(urlTasksPagenated);
   renderTasks(tasks);
 };
@@ -732,10 +732,10 @@ const showButton = button => {
 
 const isLoged = async () => {
   const users = await getLogedUser();
-  
+
   if (users.length !== 0) {
     return true;
-  };
-  
+  }
+
   return false;
 };

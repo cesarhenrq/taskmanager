@@ -14,8 +14,8 @@ const PASSWORDCONFIRMATION_INVALID = 'As senhas devem ser iguais';
 
 const CREDENTIALS_REQUIRED = 'Esse campo não pode ficar vazio';
 
-const urlUsers = 'http://localhost:3000/users';
-const urlLogedUser = 'http://localhost:3000/logedUser';
+const urlUsers = 'https://json-server.herokuapp.com/users';
+const urlLogedUser = 'https://json-server.herokuapp.com/logedUser';
 
 const registerUserButton = document.querySelector('.registerUserButton');
 const registerButton = document.querySelector('.registerButton');

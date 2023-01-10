@@ -592,8 +592,12 @@ modalEventButton.addEventListener('click', async () => {
 });
 
 logoutButton.addEventListener('click', async () => {
-  deleteLogedUser(logedUser[0].id);
+  await deleteLogedUser(logedUser[0].id);
   window.location.href = './index.html';
+});
+
+window.addEventListener('beforeunload', () => {
+  deleteLogedUser(logedUser[0].id);
 });
 
 getCompletedTasksButton.addEventListener('click', async () => {

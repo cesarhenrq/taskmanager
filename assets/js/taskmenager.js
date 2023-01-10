@@ -7,7 +7,8 @@ class Task {
   }
 }
 
-let idTask, userLogedID, logedUser, tasks, currentUserTasks, task;
+let idTask, logedUser, tasks, currentUserTasks, task;
+let userLogedID = localStorage.getItem('userID');
 
 let currentPage = 1;
 let stateTableTask = 'all';
@@ -78,7 +79,7 @@ const smalls = document.querySelectorAll('small');
 const divUser = document.querySelector('#divUser');
 
 const getLogedUser = async () => {
-  const response = await fetch(urlLogedUser);
+  const response = await fetch(`${urlLogedUser}/${userID}`);
 
   let logedUser = await response.json();
 
@@ -546,8 +547,7 @@ const isFormFieldsValidWithoutShowMessage = () => {
 window.addEventListener('load', async () => {
   if (await isLoged()) {
     logedUser = await getLogedUser();
-    userLogedID = logedUser[0].userID;
-    divUser.innerHTML += `${logedUser[0].name}`;
+    divUser.innerHTML += `${logedUser.name}`;
     urlTasksLogedUser = `https://json-server.herokuapp.com/tasks?userID=${userLogedID}`;
     urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
     loadingTasks();
@@ -592,12 +592,14 @@ modalEventButton.addEventListener('click', async () => {
 });
 
 logoutButton.addEventListener('click', async () => {
-  await deleteLogedUser(logedUser[0].id);
+  await deleteLogedUser(logedUser.id);
+  localStorage.clear();
   window.location.href = './index.html';
 });
 
-window.addEventListener('beforeunload', () => {
-  deleteLogedUser(logedUser[0].id);
+window.addEventListener('beforeunload', async () => {
+  await deleteLogedUser(logedUser.id);
+  localStorage.clear();
 });
 
 getCompletedTasksButton.addEventListener('click', async () => {

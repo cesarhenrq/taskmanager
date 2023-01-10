@@ -79,7 +79,7 @@ const smalls = document.querySelectorAll('small');
 const divUser = document.querySelector('#divUser');
 
 const getLogedUser = async () => {
-  const response = await fetch(`${urlLogedUser}/${userID}`);
+  const response = await fetch(`${urlLogedUser}/${userLogedID}`);
 
   let logedUser = await response.json();
 

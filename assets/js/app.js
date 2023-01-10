@@ -46,7 +46,7 @@ const inputNicknameLogin = document.querySelector('#inputNicknameLogin');
 const inputPasswordLogin = document.querySelector('#inputPasswordLogin');
 
 const smalls = document.querySelectorAll('small');
-const sections = document.querySelectorAll('section')
+const sections = document.querySelectorAll('section');
 
 // const darkModeToggle = document.querySelector('#darkmode-toggle');
 
@@ -93,17 +93,17 @@ const getUsers = async () => {
   return users;
 };
 
-const showModal = (modal) => {
+const showModal = modal => {
   modal.style.display = 'block';
-}
+};
 
-const hideModal = (modal) => {
+const hideModal = modal => {
   modal.style.display = 'none';
-}
+};
 
 const openModal = modal => {
-  showModal(modal)
-  toggleAnimation(modal)
+  showModal(modal);
+  toggleAnimation(modal);
   if (modal.id === 'loginPage') {
     restartInputs(formLoginInputs);
     removeBorderFormInputs(formLoginInputs);
@@ -113,13 +113,13 @@ const openModal = modal => {
   }
 };
 
-const toggleAnimation = (element) => {
-  element.classList.toggle('animation')
-}
+const toggleAnimation = element => {
+  element.classList.toggle('animation');
+};
 
 const closeModal = modal => {
-  hideModal(modal)
-  toggleAnimation(modal)
+  hideModal(modal);
+  toggleAnimation(modal);
   restartInputs(formRegisterInputs);
   removeBorderFormInputs(formRegisterInputs);
   removeTextSmalls(smalls);
@@ -293,7 +293,7 @@ const isLoginFormFieldsValidWithoutShowMessage = () => {
 const validateEachFormRegisterInput = () => {
   inputName.addEventListener('blur', () => {
     hasValue(inputName, NAME_REQUIRED);
-    const isValid = isRegisterFormFieldsValidWithoutShowMessage()
+    const isValid = isRegisterFormFieldsValidWithoutShowMessage();
     if (isValid) {
       enableButton(registerButton);
     } else {
@@ -337,7 +337,7 @@ const validateEachFormLoginInput = () => {
   formLoginInputs.forEach(loginInput => {
     loginInput.addEventListener('blur', () => {
       hasValue(loginInput, CREDENTIALS_REQUIRED);
-      const isValid = isLoginFormFieldsValidWithoutShowMessage()
+      const isValid = isLoginFormFieldsValidWithoutShowMessage();
       if (!isValid) {
         enableButton(loginUserButton);
       } else {
@@ -378,7 +378,7 @@ const validadePasswordConfirmationWithoutShowMessage = input => {
 };
 
 loginPage.addEventListener('load', () => {
-  validateEachFormLoginInput()
+  validateEachFormLoginInput();
 });
 
 /*darkModeToggle.addEventListener('click', () => {
@@ -451,7 +451,7 @@ closeRegisterUserModalButton.addEventListener('click', () => {
 
 loginUserButton.addEventListener('click', async () => {
   const users = await getUsers();
-  const isUserRegistered = checkUserIsRegistered(users, inputNicknameLogin)
+  const isUserRegistered = checkUserIsRegistered(users, inputNicknameLogin);
   if (isUserRegistered) {
     const isPasswordCorrect = checkPasswordIsCorrect(
       users,
@@ -460,6 +460,7 @@ loginUserButton.addEventListener('click', async () => {
     );
     if (isPasswordCorrect) {
       const logedUser = getLogedUser(users, inputNicknameLogin);
+      localStorage.setItem('userID', logedUser[0].id);
       await addLogedUser(logedUser[0]);
       window.location.href = './taskmenager.html';
     } else {

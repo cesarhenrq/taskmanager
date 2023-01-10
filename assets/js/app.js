@@ -377,7 +377,7 @@ const validadePasswordConfirmationWithoutShowMessage = input => {
   return false;
 };
 
-loginPage.addEventListener('load', () => {
+window.addEventListener('load', () => {
   validateEachFormLoginInput();
 });
 

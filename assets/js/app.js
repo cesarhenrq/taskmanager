@@ -290,35 +290,22 @@ const isLoginFormFieldsValidWithoutShowMessage = () => {
   return isLoginFormFieldsValid;
 };
 
+const validateInput = (input, message, button) => {
+  input.addEventListener('blur', () => {
+    hasValue(input, message);
+    if (isValid) {
+      enableButton(button);
+    } else {
+      disableButton(button);
+    }
+  });
+};
+
 const validateEachFormRegisterInput = () => {
-  inputName.addEventListener('blur', () => {
-    hasValue(inputName, NAME_REQUIRED);
-    const isValid = isRegisterFormFieldsValidWithoutShowMessage();
-    if (isValid) {
-      enableButton(registerButton);
-    } else {
-      disableButton(registerButton);
-    }
-  });
-
-  inputNickname.addEventListener('blur', () => {
-    hasValue(inputNickname, NICKNAME_REQUIRED);
-    if (isValid) {
-      enableButton(registerButton);
-    } else {
-      disableButton(registerButton);
-    }
-  });
-
-  inputPasswordUserRegister.addEventListener('blur', () => {
-    hasValue(inputPasswordUserRegister, PASSWORD_REQUIRED);
-    if (isValid) {
-      enableButton(registerButton);
-    } else {
-      disableButton(registerButton);
-    }
-  });
-
+  const isValid = isRegisterFormFieldsValidWithoutShowMessage();
+  validateInput(inputName, NAME_REQUIRED, registerButton);
+  validateInput(inputNickname, NICKNAME_REQUIRED, registerButton);
+  validateInput(inputPasswordUserRegister, PASSWORD_REQUIRED, registerButton);
   inputPasswordUserConfirmRegister.addEventListener('blur', () => {
     validadePasswordConfirmation(
       inputPasswordUserConfirmRegister,

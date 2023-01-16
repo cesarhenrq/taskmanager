@@ -56,7 +56,7 @@ const findTasksInput = document.querySelector('#findTasksInput');
 const openModalNewTaskButton = document.querySelector(
   '.openModalNewTaskButton'
 );
-const deleteTaskModal = document.querySelector('.deleteTaskModal')
+const deleteTaskModal = document.querySelector('.deleteTaskModal');
 const getAllTasksButton = document.querySelector('#getAllTasksButton');
 const getCompletedTasksButton = document.querySelector(
   '#getCompletedTasksButton'
@@ -68,8 +68,8 @@ const getStoppedTasksButton = document.querySelector('#getStoppedTasksButton');
 const getLatedTasksButton = document.querySelector('#getLatedTasksButton');
 const nextPageButton = document.querySelector('.nextPageButton');
 const previousPageButton = document.querySelector('.previousPageButton');
-const deleteButton = document.querySelector('.deleteButton')
-const closeButton = document.querySelector('.closeButton')
+const deleteButton = document.querySelector('.deleteButton');
+const closeButton = document.querySelector('.closeButton');
 
 const tableTasksBody = document.querySelector('.tableTasksBody');
 const table = document.querySelector('table');
@@ -364,7 +364,7 @@ const addDeleteTaskButtonAction = buttons => {
     button.addEventListener('click', async () => {
       await getTasksByState(urlTasksPagenated);
       idTask = tasks[index].id;
-      openModal(deleteTaskModal)
+      openModal(deleteTaskModal);
     });
   });
 };
@@ -547,6 +547,72 @@ const isFormFieldsValidWithoutShowMessage = () => {
   return validateFormFields;
 };
 
+const getTasksByState = async url => {
+  if (stateTableTask === 'all') {
+    tasks = await getTasks(url);
+  } else if (stateTableTask === 'completed') {
+    tasks = await getCompletedTasks(url);
+  } else if (stateTableTask === 'inprogress') {
+    tasks = await getInProgressTasks(url);
+  } else if (stateTableTask === 'stopped') {
+    tasks = await getStoppedTasks(url);
+  } else if (stateTableTask === 'lated') {
+    tasks = await getLatedTasks(url);
+  } else if (stateTableTask === 'search') {
+    tasks = await searchTasks(url, findTasksInput.value);
+  }
+};
+
+const controlPreviousButton = () => {
+  if (currentPage === 1) {
+    hideButton(previousPageButton);
+  } else {
+    showButton(previousPageButton);
+  }
+};
+
+const controlNextButton = async () => {
+  await getTasksByState(urlTasksLogedUser);
+  const isFinalPage = tasks.length - (currentPage - 1) * 10 <= 10;
+  if (isFinalPage) {
+    hideButton(nextPageButton);
+  } else {
+    showButton(nextPageButton);
+  }
+};
+
+const hideButton = button => {
+  button.style.display = 'none';
+};
+
+const showButton = button => {
+  button.style.display = 'block';
+};
+
+const isLoged = () => {
+  const hasUser = localStorage.getItem('userID');
+
+  if (hasUser === undefined || hasUser === null) {
+    return false;
+  }
+
+  return true;
+};
+
+const previousPage = async () => {
+  currentPage--;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  await getTasksByState(urlTasksPagenated);
+  renderTasks(tasks);
+};
+
+const nextPage = async () => {
+  currentPage++;
+  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
+  await getTasksByState(urlTasksPagenated);
+  renderTasks(tasks);
+};
+
 window.addEventListener('load', async () => {
   userLogedID = localStorage.getItem('userID');
   if (isLoged()) {
@@ -559,7 +625,7 @@ window.addEventListener('load', async () => {
     renderTasks(tasks);
     controlPreviousButton();
     controlNextButton();
-  }else {
+  } else {
     window.alert('Você deve estar logado para continuar nesta página.');
     window.location.href = './index.html';
   }
@@ -568,8 +634,8 @@ window.addEventListener('load', async () => {
 window.addEventListener('click', async event => {
   if (event.target === registerTaskModal || event.target === closeModalButton) {
     closeModal(registerTaskModal);
-  } else if(event.target === deleteTaskModal || event.target === closeButton) {
-    closeModal(deleteTaskModal)
+  } else if (event.target === deleteTaskModal || event.target === closeButton) {
+    closeModal(deleteTaskModal);
   }
 });
 
@@ -597,8 +663,8 @@ modalEventButton.addEventListener('click', async () => {
 });
 
 deleteButton.addEventListener('click', () => {
-  deleteTask(idTask)
-})
+  deleteTask(idTask);
+});
 
 logoutButton.addEventListener('click', async () => {
   await deleteLogedUser(logedUser.id);
@@ -677,20 +743,6 @@ findTasksInput.addEventListener('keyup', async () => {
   controlNextButton();
 });
 
-const previousPage = async () => {
-  currentPage--;
-  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
-  await getTasksByState(urlTasksPagenated);
-  renderTasks(tasks);
-};
-
-const nextPage = async () => {
-  currentPage++;
-  urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
-  await getTasksByState(urlTasksPagenated);
-  renderTasks(tasks);
-};
-
 previousPageButton.addEventListener('click', () => {
   previousPage();
   controlPreviousButton();
@@ -702,55 +754,3 @@ nextPageButton.addEventListener('click', () => {
   controlNextButton();
   controlPreviousButton();
 });
-
-const getTasksByState = async url => {
-  if (stateTableTask === 'all') {
-    tasks = await getTasks(url);
-  } else if (stateTableTask === 'completed') {
-    tasks = await getCompletedTasks(url);
-  } else if (stateTableTask === 'inprogress') {
-    tasks = await getInProgressTasks(url);
-  } else if (stateTableTask === 'stopped') {
-    tasks = await getStoppedTasks(url);
-  } else if (stateTableTask === 'lated') {
-    tasks = await getLatedTasks(url);
-  } else if (stateTableTask === 'search') {
-    tasks = await searchTasks(url, findTasksInput.value);
-  }
-};
-
-const controlPreviousButton = () => {
-  if (currentPage === 1) {
-    hideButton(previousPageButton);
-  } else {
-    showButton(previousPageButton);
-  }
-};
-
-const controlNextButton = async () => {
-  await getTasksByState(urlTasksLogedUser);
-  const isFinalPage = tasks.length - (currentPage - 1) * 10 <= 10;
-  if (isFinalPage) {
-    hideButton(nextPageButton);
-  } else {
-    showButton(nextPageButton);
-  }
-};
-
-const hideButton = button => {
-  button.style.display = 'none';
-};
-
-const showButton = button => {
-  button.style.display = 'block';
-};
-
-const isLoged = () => {
-  const hasUser  = localStorage.getItem('userID');
-
-  if ((hasUser === undefined) || (hasUser === null)) {
-    return false;
-  }
-
-  return true;
-};

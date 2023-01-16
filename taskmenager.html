@@ -1,183 +1,157 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Gerenciador de Tarefas</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="./assets/styles/styles.css" />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0"
-    />
-  </head>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <body>
-    <main>
-      <div class="container-fluid d-flex" id="taskMenager">
-        <div class="firstVerticalRetangle"></div>
-        <div class="secondVerticalRetangle"></div>
-        <div class="container-lg appContainer">
-          <div class="row">
-            <div class="h4 col-11 text-end" id="divUser"></div>
-            <div class="h4 col-1 text-end" id="logoutButton">Sair</div>
-          </div>
-          <div class="row logo">
-            <img src="./assets/images/logo.svg" alt="Arnia Logo" />
-          </div>
-          <div class="row mt-3 p-4 pb-0">
-            <ul class="list-inline d-flex align-items-center">
-              <li class="list-inline-item align-self-stretch">
-                <img src="./assets/images/clipboardicon.svg" />
-              </li>
-              <li class="list-inline-item h4 appName">
-                Gerenciador de Tarefas
-              </li>
-            </ul>
-          </div>
-          <div class="row mb-5">
-            <div class="col-12">
-              <button type="button" class="openModalNewTaskButton">
-                + Adicionar nova tarefa
-              </button>
-            </div>
-          </div>
-          <div class="mb-3 d-flex justify-content-between">
-            <button class="searchButtons" type="button" id="getAllTasksButton">
-              Todas
-            </button>
-            <button
-              class="searchButtons"
-              type="button"
-              id="getCompletedTasksButton"
-            >
-              Concluídas
-            </button>
-            <button
-              class="searchButtons"
-              type="button"
-              id="getInProgressTasksButton"
-            >
-              Em andamento
-            </button>
-            <button
-              class="searchButtons"
-              type="button"
-              id="getStoppedTasksButton"
-            >
-              Paradas
-            </button>
-            <button
-              class="searchButtons"
-              type="button"
-              id="getLatedTasksButton"
-            >
-              Atrasadas
-            </button>
-            <input
-              type="text"
-              id="findTasksInput"
-              placeholder="Buscar Tarefas"
-            />
-          </div>
-          <div class="table-responsive">
-            <table class="table table-borderless table-hover">
-              <thead>
-                <tr>
-                  <th>Núm</th>
-                  <th>Descrição</th>
-                  <th>Data de entrega</th>
-                  <th>Status</th>
-                  <th>Ação</th>
-                </tr>
-              </thead>
-              <tbody class="tableTasksBody"></tbody>
-            </table>
-          </div>
+  <title>Gerenciador de Tarefas</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous" />
+  <link rel="stylesheet" href="./assets/styles/styles.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+</head>
 
-          <div class="d-flex justify-content-between">
-            <div>
-              <button
-                type="button"
-                class="previousPageButton pagenationButtons"
-              >
-                Anterior
-              </button>
-            </div>
-            <div>
-              <button type="button" class="nextPageButton pagenationButtons">
-                Próxima
-              </button>
-            </div>
+<body>
+  <main>
+    <div class="container-fluid d-flex" id="taskMenager">
+      <div class="firstVerticalRetangle"></div>
+      <div class="secondVerticalRetangle"></div>
+      <div class="container-lg appContainer">
+        <div class="row">
+          <div class="h4 col-11 text-end" id="divUser"></div>
+          <div class="h4 col-1 text-end" id="logoutButton">Sair</div>
+        </div>
+        <div class="row logo">
+          <img src="./assets/images/logo.svg" alt="Arnia Logo" />
+        </div>
+        <div class="row mt-3 p-4 pb-0">
+          <ul class="list-inline d-flex align-items-center">
+            <li class="list-inline-item align-self-stretch">
+              <img src="./assets/images/clipboardicon.svg" />
+            </li>
+            <li class="list-inline-item h4 appName">
+              Gerenciador de Tarefas
+            </li>
+          </ul>
+        </div>
+        <div class="row mb-5">
+          <div class="col-12">
+            <button type="button" class="openModalNewTaskButton">
+              + Adicionar nova tarefa
+            </button>
           </div>
         </div>
-        <div class="polygonContainer">
-          <div class="polygon">&nbsp;</div>
+        <div class="mb-3 d-flex justify-content-between">
+          <button class="searchButtons" type="button" id="getAllTasksButton">
+            Todas
+          </button>
+          <button class="searchButtons" type="button" id="getCompletedTasksButton">
+            Concluídas
+          </button>
+          <button class="searchButtons" type="button" id="getInProgressTasksButton">
+            Em andamento
+          </button>
+          <button class="searchButtons" type="button" id="getStoppedTasksButton">
+            Paradas
+          </button>
+          <button class="searchButtons" type="button" id="getLatedTasksButton">
+            Atrasadas
+          </button>
+          <input type="text" id="findTasksInput" placeholder="Buscar Tarefas" />
+        </div>
+        <div class="table-responsive">
+          <table class="table table-borderless table-hover">
+            <thead>
+              <tr>
+                <th>Núm</th>
+                <th>Descrição</th>
+                <th>Data de entrega</th>
+                <th>Status</th>
+                <th>Ação</th>
+              </tr>
+            </thead>
+            <tbody class="tableTasksBody"></tbody>
+          </table>
+        </div>
+
+        <div class="d-flex justify-content-between">
+          <div>
+            <button type="button" class="previousPageButton pagenationButtons">
+              Anterior
+            </button>
+          </div>
+          <div>
+            <button type="button" class="nextPageButton pagenationButtons">
+              Próxima
+            </button>
+          </div>
         </div>
       </div>
-
-      <div
-        class="container-fluid registerTaskModal editTaskModal"
-        id="taskEventModal"
-      >
-        <form class="form d-block p-5">
-          <div class="row mb-4 modalTitle h3"></div>
-          <div class="mb-3">
-            <label class="form-label" for="inputNumber"> Número </label>
-            <input class="form-control formInputs" id="inputNumber" />
-            <small></small>
-          </div>
-
-          <div class="mb-3">
-            <label class="form-label" for="inputDescription"> Descrição </label>
-            <input class="form-control formInputs" id="inputDescription" />
-            <small></small>
-          </div>
-
-          <div class="col-4 mb-3">
-            <label class="form-label" for="inputDate"> Data </label>
-            <input
-              type="date"
-              class="form-control text-center formInputs"
-              id="inputDate"
-              placeholder="MM/DD/AAAA"
-            />
-            <small></small>
-          </div>
-          <div class="mb-5 col-4">
-            <label class="form-label" for="inputTaskStatus"> Status </label>
-            <select class="form-select formInputs" id="taskStatusInput">
-              <option selected></option>
-              <option onclick="" value="Concluído">Concluído</option>
-              <option value="Em andamento">Em andamento</option>
-              <option value="Parado">Parado</option>
-            </select>
-            <small></small>
-          </div>
-          <div class="h5 col-12 mb-5 text-center responseAPI"></div>
-          <div class="row d-flex justify-content-between">
-            <div class="col-6">
-              <a href="" class="closeModalButton"> Cancelar </a>
-            </div>
-            <div class="col-6 text-end">
-              <button type="button" class="modalEventButton">Salvar</button>
-            </div>
-          </div>
-        </form>
+      <div class="polygonContainer">
+        <div class="polygon">&nbsp;</div>
       </div>
-    </main>
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4"
-      crossorigin="anonymous"
-    ></script>
-    <script src="./assets/js/taskmenager.js"></script>
-  </body>
+    </div>
+
+    <div class="container-fluid registerTaskModal editTaskModal" id="taskEventModal">
+      <form class="form d-block p-5">
+        <div class="row mb-4 modalTitle h3"></div>
+        <div class="mb-3">
+          <label class="form-label" for="inputNumber"> Número </label>
+          <input class="form-control formInputs" id="inputNumber" />
+          <small></small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label" for="inputDescription"> Descrição </label>
+          <input class="form-control formInputs" id="inputDescription" />
+          <small></small>
+        </div>
+
+        <div class="col-4 mb-3">
+          <label class="form-label" for="inputDate"> Data </label>
+          <input type="date" class="form-control text-center formInputs" id="inputDate" placeholder="MM/DD/AAAA" />
+          <small></small>
+        </div>
+        <div class="mb-5 col-4">
+          <label class="form-label" for="inputTaskStatus"> Status </label>
+          <select class="form-select formInputs" id="taskStatusInput">
+            <option selected></option>
+            <option onclick="" value="Concluído">Concluído</option>
+            <option value="Em andamento">Em andamento</option>
+            <option value="Parado">Parado</option>
+          </select>
+          <small></small>
+        </div>
+        <div class="h5 col-12 mb-5 text-center responseAPI"></div>
+        <div class="row d-flex justify-content-between">
+          <div class="col-6">
+            <a href="" class="closeModalButton"> Cancelar </a>
+          </div>
+          <div class="col-6 text-end">
+            <button type="button" class="modalEventButton">Salvar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="container-fluid deleteTaskModal">
+      <div class="deleteTaskContent p-3">
+        <div class="h4 mb-5 text-center">
+          Você deseja mesmo deletar esta tarefa?
+        </div>
+        <div class="d-flex justify-content-between">
+          <button class="closeButton">
+            Cancelar
+          </button>
+          <button class="deleteButton">
+            Deletar
+          </button>
+        </div>
+      </div>
+    </div>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  <script src="./assets/js/taskmenager.js"></script>
+</body>
+
 </html>

@@ -56,6 +56,7 @@ const findTasksInput = document.querySelector('#findTasksInput');
 const openModalNewTaskButton = document.querySelector(
   '.openModalNewTaskButton'
 );
+const deleteTaskModal = document.querySelector('.deleteTaskModal')
 const getAllTasksButton = document.querySelector('#getAllTasksButton');
 const getCompletedTasksButton = document.querySelector(
   '#getCompletedTasksButton'
@@ -67,6 +68,8 @@ const getStoppedTasksButton = document.querySelector('#getStoppedTasksButton');
 const getLatedTasksButton = document.querySelector('#getLatedTasksButton');
 const nextPageButton = document.querySelector('.nextPageButton');
 const previousPageButton = document.querySelector('.previousPageButton');
+const deleteButton = document.querySelector('.deleteButton')
+const closeButton = document.querySelector('.closeButton')
 
 const tableTasksBody = document.querySelector('.tableTasksBody');
 const table = document.querySelector('table');
@@ -361,7 +364,7 @@ const addDeleteTaskButtonAction = buttons => {
     button.addEventListener('click', async () => {
       await getTasksByState(urlTasksPagenated);
       idTask = tasks[index].id;
-      await deleteTask(idTask);
+      openModal(deleteTaskModal)
     });
   });
 };
@@ -564,8 +567,9 @@ window.addEventListener('load', async () => {
 
 window.addEventListener('click', async event => {
   if (event.target === registerTaskModal || event.target === closeModalButton) {
-    event.preventDefault();
     closeModal(registerTaskModal);
+  } else if(event.target === deleteTaskModal || event.target === closeButton) {
+    closeModal(deleteTaskModal)
   }
 });
 
@@ -591,6 +595,10 @@ modalEventButton.addEventListener('click', async () => {
     controlNextButton();
   }
 });
+
+deleteButton.addEventListener('click', () => {
+  deleteTask(idTask)
+})
 
 logoutButton.addEventListener('click', async () => {
   await deleteLogedUser(logedUser.id);

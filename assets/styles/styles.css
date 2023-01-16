@@ -18,6 +18,10 @@ small {
   height: 100vh;
 }
 
+.h4 {
+  color: #68519d;
+}
+
 .firstVerticalRetangle {
   width: 51px;
   background-color: #68519d;
@@ -43,7 +47,7 @@ tbody > tr:nth-child(even) {
 .registerUserButton,
 .registerButton,
 .searchButtons,
-.pagenationButtons {
+.pagenationButtons, .closeButton, .deleteButton {
   background-color: white;
   color: #68519d;
   border: 1px solid #68519d;
@@ -54,7 +58,7 @@ tbody > tr:nth-child(even) {
 .openModalNewTaskButton:hover,
 .registerUserButton:hover,
 .searchButtons:hover,
-.pagenationButtons:hover {
+.pagenationButtons:hover,.closeButton:hover, .deleteButton:hover {
   background-color: #68519d;
   color: white;
 }
@@ -85,7 +89,7 @@ tr {
 }
 
 .registerTaskModal,
-.editTaskModal {
+.editTaskModal, .deleteTaskModal {
   display: none;
   position: fixed;
   z-index: 1;
@@ -97,7 +101,7 @@ tr {
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-.form {
+.form,.deleteTaskContent {
   background-color: white;
   border: 1px solid #68519d;
   border-radius: 0.5rem;
@@ -122,7 +126,7 @@ tr {
 }
 
 section.animation,
-#taskEventModal.animation {
+#taskEventModal.animation,.deleteTaskModal.animation {
   animation-name: slide;
   animation-duration: 0.5s;
   animation-fill-mode: forwards;

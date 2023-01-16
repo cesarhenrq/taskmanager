@@ -381,37 +381,6 @@ window.addEventListener('load', () => {
   validateEachFormLoginInput();
 });
 
-/*darkModeToggle.addEventListener('click', () => {
-  if (!darkModeToggle.checked) {
-    document.body.classList.remove('backgroundDarkMode')
-    openModalNewTaskButton.classList.remove('backgroundDarkMode')
-    table.classList.remove('backgroundDarkMode')
-    const trs = document.querySelectorAll('tr')
-    trs.forEach((tr) => {
-      tr.classList.remove('darkmodetr')
-    })
-    form.classList.remove('backgroundDarkMode')
-    inputs.forEach((input) => {
-      input.classList.remove('backgroundDarkMode')
-    })
-    modalEventButton.classList.remove('backgroundDarkMode')
-
-  } else {
-    document.body.classList.add('backgroundDarkMode')
-    openModalNewTaskButton.classList.add('backgroundDarkMode')
-    table.classList.add('backgroundDarkMode')
-    const trs = document.querySelectorAll('tr')
-    trs.forEach((tr) => {
-      tr.classList.add('darkmodetr')
-    })
-    form.classList.add('backgroundDarkMode')
-    inputs.forEach((input) => {
-      input.classList.add('backgroundDarkMode')
-    })
-    modalEventButton.classList.add('backgroundDarkMode')
-  }
-})*/
-
 registerUserButton.addEventListener('click', () => {
   closeModal(loginPage);
   openModal(registerPage);

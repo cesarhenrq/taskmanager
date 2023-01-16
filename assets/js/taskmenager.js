@@ -662,8 +662,9 @@ modalEventButton.addEventListener('click', async () => {
   }
 });
 
-deleteButton.addEventListener('click', () => {
-  deleteTask(idTask);
+deleteButton.addEventListener('click', async () => {
+  await deleteTask(idTask);
+  closeModal(deleteTaskModal);
 });
 
 logoutButton.addEventListener('click', async () => {

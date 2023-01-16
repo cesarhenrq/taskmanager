@@ -8,7 +8,7 @@ class Task {
 }
 
 let idTask, logedUser, tasks, currentUserTasks, task;
-let userLogedID = localStorage.getItem('userID');
+let userLogedID;
 
 let currentPage = 1;
 let stateTableTask = 'all';
@@ -548,9 +548,9 @@ const isFormFieldsValidWithoutShowMessage = () => {
 };
 
 window.addEventListener('load', async () => {
-  if (await isLoged()) {
+  userLogedID = localStorage.getItem('userID');
+  if (isLoged()) {
     logedUser = await getLogedUser();
-    console.log(logedUser);
     divUser.innerHTML += `${logedUser.name}`;
     urlTasksLogedUser = `https://json-server.herokuapp.com/tasks?userID=${userLogedID}`;
     urlTasksPagenated = `https://json-server.herokuapp.com/tasks?_sort=taskNumber&_order=asc&userID=${userLogedID}&_page=${currentPage}&_limit=10`;
@@ -559,7 +559,7 @@ window.addEventListener('load', async () => {
     renderTasks(tasks);
     controlPreviousButton();
     controlNextButton();
-  } else {
+  }else {
     window.alert('Você deve estar logado para continuar nesta página.');
     window.location.href = './index.html';
   }
@@ -745,12 +745,12 @@ const showButton = button => {
   button.style.display = 'block';
 };
 
-const isLoged = async () => {
-  const hasUser  = localStorage.getItem('userId');
+const isLoged = () => {
+  const hasUser  = localStorage.getItem('userID');
 
-  if ((hasUser !== undefined) || (hasUser !== null)) {
-    return true;
+  if ((hasUser === undefined) || (hasUser === null)) {
+    return false;
   }
 
-  return false;
+  return true;
 };
